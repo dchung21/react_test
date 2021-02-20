@@ -10,7 +10,7 @@ class ResultList extends React.Component {
 	const rows = this.props.rows;
 	let content;
 
-        //if we're still loading the results, then display a spinner
+    //if we're still loading the results, then display a spinner
 	if (this.props.isLoading) {
 	    content = <Loader className="loader" type="ThreeDots" color="#00BFF" height={100} width={100} />
 	}
@@ -25,13 +25,14 @@ class ResultList extends React.Component {
 	    content = <ul className="resultList">
 	    {rows.map((data, k) => (
 		<li key={k}>
-		<Result index={k} key={"r" + k.toString()} 
-                        name={data.clinic} 
-			distance={data.distance} 
-                        enableVisibility={this.props.enableVisibility} 
+		<Result index={k} 
+				key={"r" + k.toString()} 
+                name={data.clinic} 
+				distance={data.distance} 
+                enableVisibility={this.props.enableVisibility} 
 		        disableVisibility={this.props.disableVisibility} 
-			lng = {data.longitude}
-                        lat = {data.latitude} />
+				lng = {data.longitude}
+                lat = {data.latitude} />
 		</li>))}
 		</ul>
 	    }

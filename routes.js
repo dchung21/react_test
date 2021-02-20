@@ -7,6 +7,7 @@ require('dotenv').config()
 
 router.use(express.json());
 
+// endpoint to get geocoordinates 
 router.get('/searchClinics/address=:address&distance=:distance', function (req, res) {
 	let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.params.address}&key=${process.env.GOOGLE_MAPS_API}`;
 
@@ -37,6 +38,7 @@ router.get('/searchClinics/address=:address&distance=:distance', function (req, 
 	});
 });
 
+// endpoint to filter clinics based on some set of parameters
 router.post('/filterClinics', function(req, res) {
 	console.log(req.body)
 	let query = constructQuery(req.body.geocoord[1], req.body.geocoord[0], req.body.filter, req.body.distance);
@@ -53,6 +55,7 @@ router.post('/filterClinics', function(req, res) {
 	})
 });
 
+// endpoint to get data for a specific clinic
 router.get('/getClinicData/:clinic', function(req, res) {
 	console.log(req.params);
 	let query1 = `SELECT address, state, city, zipcode, phone, day_of_week, hour_open, hour_close, latitude, longitude`+ 
@@ -82,16 +85,21 @@ router.get('/getClinicData/:clinic', function(req, res) {
 });	
 
 //get endpoint, for all clinics
-router.get("/getData", function(req, res) {
-	let query = "SELECT clinic FROM ClinicAddresses;"
+router.get("/getClinics", function(req, res) {
+	let query = "SELECT DISTINCT clinic FROM ClinicAddress;"
 
 	pool.query(query, function(err, rows) {
 		if (err) 
 			throw err;
 
 		console.log(rows);
-		res.send(rows);
+		res.send({rows: rows});
 	});
 });
 
+//SECURE ENDPOINT to add a new clinic to the database
+router.post("/add", function(req, res) {
+	//we need to detect duplicates
+
+})
 module.exports = router;
