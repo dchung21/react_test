@@ -16,7 +16,15 @@ export default function ClinicContainer(props) {
 				setLoadingStatus(false);	
 			});
 		}
-		fetchData();
+		
+		//check if logged in -- if we are we can load the data now
+		const isLoggedIn = Axios.get("/isLoggedIn").then( function(response) {
+			if (!response.data)
+				history.push("/login")
+
+			else
+				fetchData();
+		})
 	}, []);
 
 	////////////////////////////////////////////////////////////////////

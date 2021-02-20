@@ -30,9 +30,15 @@ app.get('/fail', function(req, res) {
 	res.send(false);
 })
 
-app.get('/testing', isLoggedIn, function(req, res) {
-    res.send("logged in");
+//checks if log in - returns true if logged in, false if not
+app.get('/isLoggedIn', isLoggedIn, function(req, res) {
+    res.send(true)
 });
+
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+  });
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
@@ -41,7 +47,7 @@ function isLoggedIn(req, res, next) {
     }
 
     console.log("not logged in");
-    res.send("not logged in");
+    res.send(false);
 }
 
 // END PASSPORT STUFF

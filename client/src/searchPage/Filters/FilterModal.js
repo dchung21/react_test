@@ -38,27 +38,7 @@ let filters = {
 	{ label: "Tagalog", name: "tagalog" },
 	{ label: "Spanish", name: "spanish" },
 	{ label: "Russian", name: "russian" },
-	{ label: "Arabic", name: "arabic" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
-	{ label: "Language", name: "language" },
+	{ label: "Arabic", name: "arabic" }
 ]
 }
 
@@ -100,12 +80,12 @@ export default function FilterModal(props) {
 	    form = filters[props.name].map((data, k) => (
 	    <FormControlLabel index={data.name + k} 
 			      class = {styles.checkbox} 
-                              control={<Checkbox id = {props.filterName} 
-                                                 value={data.label} 
-						 onChange = {onChange} 
-                                                 checked={selectedFilter.includes(data.label)}/>} 
-						 label={data.label} 
-                                                 onChange = {props.onChange}
+                          control={<Checkbox id = {props.filterName} 
+                          value={data.label} 
+						  onChange = {onChange} 
+                          checked={selectedFilter.includes(data.label)}/>} 
+						  label={data.label} 
+                          onChange = {props.onChange}
             />
 	    ))
 	}

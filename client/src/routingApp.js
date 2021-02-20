@@ -8,6 +8,8 @@ import Login from './admin/login.js';
 import ClinicContainer from './admin/ClinicContainer.js';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
+//remove me later probably...
+import AddForm from './admin/addClinic.js';
 
 class RoutingApp extends React.Component {
 	render () {
@@ -19,6 +21,7 @@ class RoutingApp extends React.Component {
 					<Route path="/result/:clinic" component = {ResultPage} />
 					<Route path="/login" component = {Login} />
 					<Route path="/manage" component = {ClinicContainer} />
+					<Route path="/testing" component = {AddForm} />
 					<Route path="/" component = {HomeSearch} />
 				</Switch>
 			</BrowserRouter>

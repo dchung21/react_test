@@ -1,6 +1,5 @@
 import React from 'react';
 import ResultAvatar from './ResultAvatar.js';
-import Axios from 'axios';
 import Paper from '@material-ui/core/Paper';
 import './Result.css';
 import { useHistory } from 'react-router-dom';

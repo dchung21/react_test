@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
+import { useHistory } from "react-router-dom";
 import Axios from 'axios';
 
 export default function Login() {
+    let history = useHistory();
+
     const [failedLogin, setLogin] = useState(false);
 
     const handleSubmit = (e) => {
@@ -18,15 +21,21 @@ export default function Login() {
         Axios.post("./login", data).then(function(response) {
             console.log(response);
             if (response.data)
-                console.log("Logged in successfully"); //prob will just redirect...
+                history.push("/manage");
             else
                 setLogin(true);
         });
     }
 
     const test = (e) => {
-        Axios.get("./testing").then(function(response) {
+        Axios.get("./isLoggedIn").then(function(response) {
             console.log(response);
+        })
+    }
+
+    const logout = () => {
+        Axios.get("./logout").then(function(response) {
+            console.log("logged out")
         })
     }
 
@@ -40,6 +49,7 @@ export default function Login() {
             </Button>
         </form>
         <Button onClick = {test}> Check if Logged in </Button>
+        <Button onClick = {logout}> Log out</Button>
 
         </div>
         
