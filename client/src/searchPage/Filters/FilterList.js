@@ -27,7 +27,7 @@ const options = {
 		{ label: "Medi-Cal", name: "medi-cal"},
 		{ label: "My Health LA", name: "mlha"}
 	],
-	"Languages" : [
+	"Language" : [
 		{ label: "English", name: "english" },
 		{ label: "Cantonese", name: "cantonese" },
 		{ label: "Mandarin", name: "mandarin" },

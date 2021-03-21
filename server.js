@@ -5,6 +5,8 @@ const app = express();
 const routes = require('./routes.js');
 const passport = require('passport');
 const auth = require('./auth.js');
+const { pool } = require('./database.js');
+const { default: axios } = require('axios');
 
 app.use(express.json());
 app.use(express.static(__dirname + '/src'));
@@ -23,6 +25,7 @@ app.use(passport.session());
 app.post('/login', 
   passport.authenticate('local', { failureRedirect: '/fail' }),
   function(req, res) {
+    console.log("Logged in")
 	  res.send(true);
   });
 
@@ -40,7 +43,38 @@ app.get('/logout', function(req, res){
     res.redirect('/');
   });
 
-function isLoggedIn(req, res, next) {
+app.post('/test', isLoggedIn, function(req, res) {
+  let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
+                `%20${req.body.city}` +
+                `%20${req.body.state}` +
+                `%20${req.body.zip}` + 
+                `&key=${process.env.GOOGLE_MAPS_API}`;
+
+  console.log(geoapi);
+  axios.get(geoapi).then(function (response, body) {
+      if (response.status == 200) {
+          let geocoord = response.data.results[0].geometry.location;
+          console.log(geocoord);
+          let query = "START TRANSACTION;\n" +
+              "INSERT INTO ClinicCoords(clinic, longitude, latitude, coords) VALUES (?, ?, ?, POINT(?, ?));\n" +
+              "INSERT INTO ClinicAddress(clinic, address, city, zipcode, phone) VALUES (?, ?, ?, ?, ?);\n" + 
+              "COMMIT;"
+ 
+          let params = [req.body.clinicName, geocoord.lng, geocoord.lat, geocoord.lng, geocoord.lat,
+                        req.body.clinicName, req.body.address, req.body.city, req.body.zip, req.body.phone];
+
+          pool.query(query, params, function (err, result) {
+              if (err)
+                throw err;
+
+              console.log(result); 
+          });
+
+      }
+  });
+
+})
+  function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         console.log("logged in");
         return next();

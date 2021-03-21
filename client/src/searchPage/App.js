@@ -18,7 +18,7 @@ export default function App (props) {
 	const [rows, setRows] = useState([]);
 	const [geocoord, setGeocoord] = useState([0, 0]);
 	const [address, setAddress] = useState(props.match.params.address);
-	const [filters, setFilters] = useState({"Services": [], "Insurance & Payment": [], "Languages": []});
+	const [filters, setFilters] = useState({"Services": [], "Insurance & Payment": [], "Language": []});
 	const [isDialogOpen, setDialogOpen] = useState(false);
 	const [currentFilter, setCurrentFilter] = useState("");
 	const [visibleBox, setVisibleBox] = useState(-1);
@@ -77,6 +77,7 @@ export default function App (props) {
 		setIsLoading(true);
 		let cloneFilters = {...filters};
 		const category = event.target.id;
+		console.log(category);
 		let filter = cloneFilters[category];
 
 		if (event.target.checked) {

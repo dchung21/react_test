@@ -5,7 +5,7 @@ const { pool } = require('./database.js');
 const { constructQuery } = require('./query.js');
 require('dotenv').config()
 
-router.use(express.json());
+//router.use(express.json());
 
 // endpoint to get geocoordinates 
 router.get('/searchClinics/address=:address&distance=:distance', function (req, res) {
@@ -97,9 +97,5 @@ router.get("/getClinics", function(req, res) {
 	});
 });
 
-//SECURE ENDPOINT to add a new clinic to the database
-router.post("/add", function(req, res) {
-	//we need to detect duplicates
 
-})
 module.exports = router;
