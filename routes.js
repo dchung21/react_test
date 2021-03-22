@@ -64,11 +64,11 @@ router.get('/getClinicData/:clinic', function(req, res) {
 	` WHERE ` + 
 	`ClinicHours.clinic = '${req.params.clinic}';`
 	console.log(query1);
-	let query2 = `SELECT treatment from ClinicTreatment WHERE clinic = '${req.params.clinic}';`;
+	let query2 = `SELECT services from ClinicServices WHERE clinic = '${req.params.clinic}';`;
 
 	let query3 = `SELECT language from ClinicLanguage WHERE clinic= '${req.params.clinic}';`;
 
-	let query4 = `SELECT insurance from ClinicInsurance WHERE clinic = '${req.params.clinic}';`;
+	let query4 = `SELECT payment from ClinicPayment WHERE clinic = '${req.params.clinic}';`;
 	pool.query( query1 +  query2 + query3 + query4, function(err, rows) {
 		if (err)
 			throw err;
@@ -76,9 +76,9 @@ router.get('/getClinicData/:clinic', function(req, res) {
 		console.log(rows);	
 		let re = {
 			rows: rows[0],
-			treatment: rows[1],
+			services: rows[1],
 			language: rows[2],
-			insurance: rows[3]
+			payment: rows[3]
 		};
 		res.send(re);
 	})

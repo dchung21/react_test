@@ -22,7 +22,7 @@ const options = {
 		{ label: "Mental Health", name: "mentalHealth"},
 		{ label: "Immunizations", name: "immunizations"}
 	],
-	"Insurance & Payment" : [
+	"Payment" : [
 		{ label: "Medicare", name: "medicare" },
 		{ label: "Medi-Cal", name: "medi-cal"},
 		{ label: "My Health LA", name: "mlha"}

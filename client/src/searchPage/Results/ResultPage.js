@@ -9,7 +9,6 @@ import styles from './resultPage.module.css';
 import Axios from 'axios';
 import EmptyResultPage from './EmptyResultPage';
 import Loader from 'react-loader-spinner';
-import { withRouter } from 'react-router-dom';
 
 
 function tConvert (time) {
@@ -156,11 +155,11 @@ export default function ResultPage (props) {
 							</div>
 							<div className = {styles.insurance}>
 							<h4>Insurance</h4>
-							{createChecks(data.insurance, "insurance")}<br />
+							{createChecks(data.payment, "payment")}<br />
 							</div>
 							<div className = {styles.treatment}>
 							<h4>Treatments</h4>
-							{createChecks(data.treatment, "treatment")}<br />
+							{createChecks(data.services, "services")}<br />
 							</div>
 						</div>
 					</div>

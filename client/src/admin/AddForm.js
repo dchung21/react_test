@@ -2,13 +2,24 @@ import React, { useState } from "react";
 import Axios from "axios";
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
 import Checkbox from '@material-ui/core/Checkbox';
-import { useHistory } from "react-router-dom";
 import styles from './AddForm.module.css';
+import { makeStyles } from '@material-ui/core/styles';
 import { FormLabel } from "@material-ui/core";
 
+const useStyles = makeStyles((theme) => ({
+    root: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            width: '25ch',
+        },
+        marginLeft: 20,
+        marginTop: 20,
+    }
+}))
 
 export default function AddForm(props) {
 	const [clinicName, setClinicName] = useState("");
@@ -129,26 +140,45 @@ let filters = {
     ))
 
 	
-
+        const classes = useStyles();
     
     return (
-        <form onSubmit = {handleSubmit}>
+        <div>
+        <h2>Add a Clinic</h2>
+        <form className = {classes.root} onSubmit = {handleSubmit}>
 			<FormControl>
-            <TextField id="clinicName" label="Name of Clinic" placeholder = "Name of the Clinic" variant="outlined" onInput = {e => setClinicName(e.target.value)} />
-            <TextField id="address" label="Address" variant="outlined" placeholder = "Address (123 Name of Street)" onInput = {e => setAddress(e.target.value)} />
-            <TextField id="city" label="City" variant="outlined" placeholder = "Los Angeles" onInput = {e => setCity(e.target.value)} />
-            <TextField id="state" label="State" variant="outlined" placeholder = "CA" onInput = {e => setState(e.target.value) }/>
-            <TextField id="zipcode" label="Zipcode" variant="outlined" placeholder = "12345" onInput = {e => setZip(e.target.value)} />
-			<TextField id="phone" label="phone" variant="outlined" placeholder = "415-123-4567" onInput = {e => setPhone(e.target.value)} />
-			<FormLabel>Services</FormLabel>
-            {listServices}
-			<FormLabel>Payment Options</FormLabel>
-			{listPayment}
-			<FormLabel>Languages</FormLabel>
-			{listLang}
-			</FormControl>
+                <div>
+                    <TextField id="clinicName" label="Name of Clinic" placeholder = "Name of the Clinic" variant="outlined" onInput = {e => setClinicName(e.target.value)} />
+                    <TextField id="address" label="Address" variant="outlined" placeholder = "Address (123 Name of Street)" onInput = {e => setAddress(e.target.value)} />
+                    <TextField id="city" label="City" variant="outlined" placeholder = "Los Angeles" onInput = {e => setCity(e.target.value)} />
+                    <TextField id="state" label="State" variant="outlined" placeholder = "CA" onInput = {e => setState(e.target.value) }/>
+                    <TextField id="zipcode" label="Zipcode" variant="outlined" placeholder = "12345" onInput = {e => setZip(e.target.value)} />
+			        <TextField id="phone" label="phone" variant="outlined" placeholder = "415-123-4567" onInput = {e => setPhone(e.target.value)} />
+                </div>
+                <div>
+			        <FormLabel>Services</FormLabel>
+                    <FormGroup row>
+                    {listServices}
+                    </FormGroup>
+                </div>
+                
+                <div>
+			        <FormLabel>Payment Options</FormLabel>
+                    <FormGroup row>
+			        {listPayment}
+                    </FormGroup>
+                </div>
 
-			<Button type="submit" value="Submit" variant="contained" color="secondary">Submit</Button>
-        </form>
+                <div>
+			        <FormLabel>Languages</FormLabel>
+                    <FormGroup row>
+			        {listLang}
+                    </FormGroup>
+                </div>
+			    </FormControl>
+
+			    <Button type="submit" value="Submit" variant="contained" color="secondary">Submit</Button>
+            </form>
+        </div>
     );
 }

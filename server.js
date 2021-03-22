@@ -23,14 +23,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.post('/login', 
-  passport.authenticate('local', { failureRedirect: '/fail' }),
-  function(req, res) {
-    console.log("Logged in")
-	  res.send(true);
-  });
+    passport.authenticate('local', { failureRedirect: '/fail' }),
+    function(req, res) {
+        console.log("Logged in")
+        res.send(true);
+    
+    });
+
 
 app.get('/fail', function(req, res) {
-	res.send(false);
+    res.send(false);
 })
 
 //checks if log in - returns true if logged in, false if not
@@ -44,32 +46,58 @@ app.get('/logout', function(req, res){
   });
 
 app.post('/test', isLoggedIn, function(req, res) {
-  let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
+    let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
                 `%20${req.body.city}` +
                 `%20${req.body.state}` +
                 `%20${req.body.zip}` + 
                 `&key=${process.env.GOOGLE_MAPS_API}`;
 
-  console.log(geoapi);
-  axios.get(geoapi).then(function (response, body) {
-      if (response.status == 200) {
-          let geocoord = response.data.results[0].geometry.location;
-          console.log(geocoord);
-          let query = "START TRANSACTION;\n" +
-              "INSERT INTO ClinicCoords(clinic, longitude, latitude, coords) VALUES (?, ?, ?, POINT(?, ?));\n" +
-              "INSERT INTO ClinicAddress(clinic, address, city, zipcode, phone) VALUES (?, ?, ?, ?, ?);\n" + 
-              "COMMIT;"
+    console.log(geoapi);
+
+    axios.get(geoapi).then(function (response, body) {
+        if (response.status == 200) {
+        let geocoord = response.data.results[0].geometry.location;
+        console.log(geocoord);
+          
+        let queryServices = "";
+        let queryLang = "";
+        let queryPayment = "";
+        
+        let params = [req.body.clinicName, geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng,
+                    req.body.clinicName, req.body.address, req.body.city, req.body.zip, req.body.phone];
+
+        for (x of req.body.services) {
+            queryServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
+            params.push(req.body.clinicName);
+            params.push(x);
+        }
+
+        for (x of req.body.lang) {
+            queryLang += "INSERT INTO ClinicLanguage(clinic, language) VALUES (?, ?);\n";
+            params.push(req.body.clinicName);
+            params.push(x);
+        }
+
+        for (x of req.body.payment) {
+            queryPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
+            params.push(req.body.clinicName);
+            params.push(x);
+        }
+
+        let query = "START TRANSACTION;\n" +
+                    "INSERT INTO ClinicCoords(clinic, longitude, latitude, coords) VALUES (?, ?, ?, POINT(?, ?));\n" +
+                    "INSERT INTO ClinicAddress(clinic, address, city, zipcode, phone) VALUES (?, ?, ?, ?, ?);\n" + 
+                    queryServices +
+                    queryLang +
+                    queryPayment +
+                    "COMMIT;"
  
-          let params = [req.body.clinicName, geocoord.lng, geocoord.lat, geocoord.lng, geocoord.lat,
-                        req.body.clinicName, req.body.address, req.body.city, req.body.zip, req.body.phone];
+        pool.query(query, params, function (err, result) {
+            if (err)
+               throw err;
 
-          pool.query(query, params, function (err, result) {
-              if (err)
-                throw err;
-
-              console.log(result); 
+            console.log(result); 
           });
-
       }
   });
 

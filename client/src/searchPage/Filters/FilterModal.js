@@ -26,13 +26,13 @@ let filters = {
 
 ],
 
-	"Insurance & Payment": [
+	"Payment": [
 	{label: "Private", name: "privateInsurance"},
 	{label: "Flat Fee", name: "flatFee"},
 	{label: "HealthyKids LA", name: "healthtKids"},
 ],
 
-	Languages: [
+	"Language": [
 	{ label: "Vietnamese", name: "vietnamese" },
 	{ label: "Korean", name: "korean" },
 	{ label: "Tagalog", name: "tagalog" },
