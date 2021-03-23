@@ -11,14 +11,14 @@ export default function ClinicContainer(props) {
 	let content;
 	useEffect(() => {
 		async function fetchData() {
-			const result = await Axios.get(`/api/getClinics`).then( function(response) {
+			await Axios.get(`/api/getClinics`).then( function(response) {
 				setRows(response.data.rows);
 				setLoadingStatus(false);	
 			});
 		}
 		
 		//check if logged in -- if we are we can load the data now
-		const isLoggedIn = Axios.get("/isLoggedIn").then( function(response) {
+		Axios.get("/isLoggedIn").then( function(response) {
 			if (!response.data)
 				history.push("/login")
 
@@ -40,7 +40,7 @@ export default function ClinicContainer(props) {
 	}
 
     //if we found no results display some error message
-    else if (!loading && rows.length == 0) {
+    else if (!loading && rows.length === 0) {
 	    content = <div className="error"><h2>There's an error retrieving data.</h2></div>
 	}
 

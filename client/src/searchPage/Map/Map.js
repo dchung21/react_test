@@ -3,9 +3,6 @@ import Map from 'pigeon-maps';
 import CenterMarker from './centerMarker.js';
 import CMimg from './marker.png';
 import ClinicMarker from './pin.svg';
-import styles from './Map.css';
-import Axios from 'axios';
-import { useHistory } from 'react-router-dom';
 
 
 function mapTileProvider (x, y, z, dpr) {
@@ -14,8 +11,6 @@ function mapTileProvider (x, y, z, dpr) {
 
 
 export default function MapBox(props) {	
-	let history = useHistory();
-
         //this doesn't work....
 	const handleMarkerClick = (event) => {
 		/*

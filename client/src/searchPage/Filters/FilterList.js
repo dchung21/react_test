@@ -8,7 +8,6 @@ This component is the sidebar component of the search page
 import React, { useState }  from 'react';
 import CheckListForm from './CheckListForm.js';
 import Divider from '@material-ui/core/Divider';
-import Slider from '@material-ui/core/Slider';
 import styles from './filterList.module.css';
 import Typography from '@material-ui/core/Typography';
 import Select from '@material-ui/core/Select';
@@ -42,7 +41,6 @@ for (let i = 5; i <= 25; i += 5) {
 
 export default function FilterList (props) {
 	const [distance, setDistance] = useState(props.distance);
-	{/*** Creating the check list of filters} ***/}
 	let filters = [];
 	for (const key of Object.keys(options)) {
 		filters.push(
@@ -56,7 +54,6 @@ export default function FilterList (props) {
 			</div>
 		);
 	}
-	{/*** finish creating checklist of filters ***/}
 
 
 	return (

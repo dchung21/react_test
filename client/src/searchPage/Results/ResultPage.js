@@ -25,7 +25,7 @@ function tConvert (time) {
 }
 
 function isOpen(open, close) {
-	if (open == close)
+	if (open === close)
 		return false;
 	let o = open.split(':'); // split it at the colons
 	let c = close.split(':');
@@ -45,7 +45,7 @@ function mapTileProvider (x, y, z, dpr) {
 function convertHours(hours) {
 	let hr = [];
 	for (let i = 0; i < 7; i++) {
-		if (hours[i].hour_open == hours[i].hour_close) {
+		if (hours[i].hour_open === hours[i].hour_close) {
 			hr[i] = "Closed";
 			}
 		else {
@@ -75,7 +75,7 @@ export default function ResultPage (props) {
 
 	useEffect(() => {
 		async function fetchData() {
-			const result = await Axios.get(`../api/getClinicData/${props.match.params.clinic}`).then( function(response) {
+			await Axios.get(`../api/getClinicData/${props.match.params.clinic}`).then( function(response) {
 			setData(response.data);
 			setIsLoading(false);
 			});
@@ -121,7 +121,7 @@ export default function ResultPage (props) {
 
 					<div className = {styles.bodyHeader}>
 						<h1>{props.match.params.clinic}</h1>
-						<h3 className = {styles.currentHour}>{((hours[n] != "Closed") ? "Open" : "") + " " + hours[n]}</h3>
+						<h3 className = {styles.currentHour}>{((hours[n] !== "Closed") ? "Open" : "") + " " + hours[n]}</h3>
 					</div>
 
 					<div className = {styles.about}>

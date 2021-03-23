@@ -52,7 +52,7 @@ app.post('/test', isLoggedIn, function(req, res) {
                 `%20${req.body.zip}` + 
                 `&key=${process.env.GOOGLE_MAPS_API}`;
 
-    console.log(geoapi);
+    console.log(req.body);
 
     axios.get(geoapi).then(function (response, body) {
         if (response.status == 200) {
@@ -62,10 +62,12 @@ app.post('/test', isLoggedIn, function(req, res) {
         let queryServices = "";
         let queryLang = "";
         let queryPayment = "";
+        let queryHours = "";
         
         let params = [req.body.clinicName, geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng,
                     req.body.clinicName, req.body.address, req.body.city, req.body.zip, req.body.phone];
 
+        console.log("type", typeof(req.body.openHours[0]));
         for (x of req.body.services) {
             queryServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
             params.push(req.body.clinicName);
@@ -84,14 +86,24 @@ app.post('/test', isLoggedIn, function(req, res) {
             params.push(x);
         }
 
+        for (let i = 0; i < 7; i++) {
+            queryHours += "INSERT INTO ClinicHours(clinic, day_of_week, hour_open, hour_close) VALUES (?, ?, ?, ?);\n";
+            params.push(req.body.clinicName);
+            params.push(i+1);
+            params.push(req.body.openHours[i]);
+            params.push(req.body.closeHours[i]);
+        }
         let query = "START TRANSACTION;\n" +
                     "INSERT INTO ClinicCoords(clinic, longitude, latitude, coords) VALUES (?, ?, ?, POINT(?, ?));\n" +
                     "INSERT INTO ClinicAddress(clinic, address, city, zipcode, phone) VALUES (?, ?, ?, ?, ?);\n" + 
                     queryServices +
                     queryLang +
                     queryPayment +
+                    queryHours +
                     "COMMIT;"
  
+        console.log(query);
+        
         pool.query(query, params, function (err, result) {
             if (err)
                throw err;

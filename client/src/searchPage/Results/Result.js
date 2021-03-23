@@ -21,8 +21,7 @@ export default function Result(props) {
 	}
 
 	const onClick = () => {
-	    let data = {clinic: props.name};
-		        history.push({pathname: `/result/${props.name}`}); 
+		history.push({pathname: `/result/${props.name}`}); 
 	}
 
 	return (

@@ -76,7 +76,7 @@ export default function FilterModal(props) {
 
 	let form;
 	
-	if (props.name != "") {
+	if (props.name !== "") {
 	    form = filters[props.name].map((data, k) => (
 	    <FormControlLabel index={data.name + k} 
 			      class = {styles.checkbox} 
