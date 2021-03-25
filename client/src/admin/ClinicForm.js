@@ -211,6 +211,7 @@ export default function ClinicForm(props) {
 	
         const classes = useStyles();
     
+    
     return (
         <div className = {styles.root}>
         <h1>Add a Clinic</h1>

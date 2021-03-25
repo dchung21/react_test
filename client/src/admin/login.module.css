@@ -15,7 +15,6 @@
 
 #homeLogo {
     font-family: Helvetica Neue;
-    color: rgb(88, 88, 88);
     margin-left: 41%;
 }
 
@@ -23,14 +22,13 @@
     font-family: Helvetica Neue;
     font-size: 30px;
     font-weight: 600;
-    color: rgb(243, 241, 241);
+    color: rgb(59, 59, 59);
     margin-top: -10px;
 }
 
 .form {
     
     box-shadow: 0 9px 50px hsla(30, 2%, 34%, 0.31);
-    background-image: linear-gradient(-225deg, #b2b1ee 50%, #6e6e6e 50%);
     position: absolute;
     align-items: center;
     justify-content: center;
@@ -45,7 +43,7 @@
     padding: 30px;	
     margin-top: 15px;
     margin-bottom: 70px; 
-    color: white;				
+    color: rgb(59, 58, 58);				
 }
 
 .label {
