@@ -1,0 +1,67 @@
+.container {
+    position: absolute;
+	height: 100%;
+    width: 100%;
+    background-image: linear-gradient(-225deg, #ffffff 0%, #bbb0f7 100%);
+}
+
+.center {
+    position: fixed;
+    top: 20%;
+    left: 48%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+#homeLogo {
+    font-family: Helvetica Neue;
+    color: rgb(88, 88, 88);
+    margin-left: 41%;
+}
+
+.header {
+    font-family: Helvetica Neue;
+    font-size: 30px;
+    font-weight: 600;
+    color: rgb(243, 241, 241);
+    margin-top: -10px;
+}
+
+.form {
+    
+    box-shadow: 0 9px 50px hsla(30, 2%, 34%, 0.31);
+    background-image: linear-gradient(-225deg, #b2b1ee 50%, #6e6e6e 50%);
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    width:100%;
+    height: 350%;
+    padding: 80px;
+    border-radius: 5px; 
+}
+
+.input {
+    height: 100px;
+    padding: 30px;	
+    margin-top: 15px;
+    margin-bottom: 70px; 
+    color: white;				
+}
+
+.label {
+    margin-bottom: 20px;
+    margin-right: -38px;
+    margin-left: -38px;
+    background: #ffffffe5;
+    color: #333;
+    padding: 14px 36px 15px 9px;
+    border: 1px solid;
+    border-color: #888888;
+    border-radius: 5px;
+}
+
+
+
+
+
+
