@@ -1,0 +1,65 @@
+.container {
+    position: absolute;
+	height: 100%;
+    width: 100%;
+    background-image: linear-gradient(-225deg, #ffffff 0%, #bbb0f7 100%);
+}
+
+.center {
+    position: fixed;
+    top: 20%;
+    left: 48%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+#homeLogo {
+    font-family: Helvetica Neue;
+    margin-left: 41%;
+}
+
+.header {
+    font-family: Helvetica Neue;
+    font-size: 30px;
+    font-weight: 600;
+    color: rgb(59, 59, 59);
+    margin-top: -10px;
+}
+
+.form {
+    
+    box-shadow: 0 9px 50px hsla(30, 2%, 34%, 0.31);
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    width:100%;
+    height: 350%;
+    padding: 80px;
+    border-radius: 5px; 
+}
+
+.input {
+    height: 100px;
+    padding: 30px;	
+    margin-top: 15px;
+    margin-bottom: 70px; 
+    color: rgb(59, 58, 58);				
+}
+
+.label {
+    margin-bottom: 20px;
+    margin-right: -38px;
+    margin-left: -38px;
+    background: #ffffffe5;
+    color: #333;
+    padding: 14px 36px 15px 9px;
+    border: 1px solid;
+    border-color: #888888;
+    border-radius: 5px;
+}
+
+
+
+
+
+
