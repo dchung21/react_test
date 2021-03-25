@@ -18,6 +18,6 @@ export default function AddForm() {
 
 
     return(
-        <ClinicForm data={data} />
+        <ClinicForm data={data} endpoint={"./test"} />
     )
 }

@@ -81,7 +81,7 @@ export default function ClinicForm(props) {
 		};
 
         //should have a success indicator
-		Axios.post('/test', data).then( () => {
+		Axios.post(props.endpoint, data).then( () => {
 			console.log("h1");
 		});
 	}
