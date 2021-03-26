@@ -179,7 +179,7 @@ app.post('/test', isLoggedIn, function(req, res) {
             if (err)
                throw err;
 
-            console.log(result); 
+            res.send("Successfully added clinic");
           });
       }
   });
