@@ -24,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
+//OPTIMIZE ME PLEASE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 export default function ClinicForm(props) {
 	const [clinicName, setClinicName] = useState(props.data.clinicName);
 	const [address, setAddress] = useState(props.data.address);
@@ -38,6 +40,7 @@ export default function ClinicForm(props) {
     const [openHours, setOpenHours] = useState(props.data.openHours);
     const [closeHours, setCloseHours] = useState(props.data.closeHours);
 
+    let listServices, listLang, listPayment;
     useEffect(() => {
         if (openHours.length == 0 && closeHours == 0) {
             let newOpenHours = [];
@@ -50,6 +53,8 @@ export default function ClinicForm(props) {
             setOpenHours(newOpenHours);
             setCloseHours(newCloseHours);
         }
+
+        listServices = constructCheckbox(services, "Services", setServices); 
     }, []);
 
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -82,9 +87,9 @@ export default function ClinicForm(props) {
             closeHours: convertedCloseHours
 		};
 
-        //should have a success indicator
-		Axios.post(props.endpoint, data).then( () => {
-			console.log("h1");
+        //should have a success indicator, then we redirect to the edit page instead. 
+		Axios.post(props.endpoint, data).then( (res) => {
+            console.log("res");
 		});
 	}
 
@@ -94,9 +99,10 @@ export default function ClinicForm(props) {
     params
         e: event
         arr: the array we will update -- should be services/lang/payment
+        str: the string corresponding to the filters object
         f: the corresponding function to update the state, setServices, setLang...
     */
-	const genericChange = (e, arr, f) => {
+	const genericChange = (e, arr, str, f) => {
 		let clone = [...arr];
 
 		if (e.target.checked) {
@@ -122,10 +128,26 @@ export default function ClinicForm(props) {
         let copy = [...arr];
         copy[k] = date;
 
+
         f(copy);
     }
 
-    //feel like there should be a better way to store this information
+    const constructCheckbox = (arr, str, f) => {
+        let checkboxes = filters[str].map((data, k) => (
+            <FormControlLabel index={data + k}
+                                control = {<Checkbox id = {props.filterName}
+                                            value={data}
+                                            onChange = {e => genericChange(e, arr, f)}
+                                            checked={arr.includes(data)}
+                                            />}
+                                label={data}
+                                onChange = {props.onChange}
+            />
+        ))
+
+        return checkboxes;
+    }
+
     let filters = {
         Services: 
         ["Mental Health", "Primary Care", "Immunizations", "Gastroenterology", "Dental",
@@ -141,42 +163,10 @@ export default function ClinicForm(props) {
         ["Vietnamese", "Korean", "Tagalog", "Spanish", "Russian", "Arabic"]
     }
 
-    //we construct all the form components here
-    let listServices = filters["Services"].map((data, k) => (
-	    <FormControlLabel index={data + k} 
-                          control={<Checkbox id = {props.filterName} 
-                          value={data} 
-						  onChange = {e => genericChange(e, services, setServices)}
-                          checked={services.includes(data)}
-                          />} 
-						  label={data} 
-                          onChange = {props.onChange}
-            />
-    ))
+    listServices = constructCheckbox(services, "Services", setServices);
+    listPayment = constructCheckbox(payment, "Insurance & Payment", setPayment);
+    listLang = constructCheckbox(lang, "Languages", setLang);
 
-	let listPayment = filters["Insurance & Payment"].map((data, k) => (
-	    <FormControlLabel index={data + k} 
-                          control={<Checkbox id = {data.name} 
-                          value={data} 
-						  onChange = {e => genericChange(e, payment, setPayment)}
-                          checked={payment.includes(data)}
-                          />} 
-						  label={data} 
-                          onChange = {props.onChange}
-            />
-    ))
-
-	let listLang = filters["Languages"].map((data, k) => (
-	    <FormControlLabel index={data.name + k} 
-                          control={<Checkbox id = {props.filterName} 
-                          value={data} 
-						  onChange = {e => genericChange(e, lang, setLang)}
-                          checked={lang.includes(data)}
-                          />} 
-						  label={data} 
-                          onChange = {props.onChange}
-            />
-    ))
 
     let hourSelectors = [];
 
@@ -211,8 +201,7 @@ export default function ClinicForm(props) {
     }
 
 	
-        const classes = useStyles();
-    
+    const classes = useStyles();
     
     return (
         <div className = {styles.root}>
