@@ -39,15 +39,17 @@ export default function ClinicForm(props) {
     const [closeHours, setCloseHours] = useState(props.data.closeHours);
 
     useEffect(() => {
-        let newOpenHours = [];
-        let newCloseHours = [];
+        if (openHours.length == 0 && closeHours == 0) {
+            let newOpenHours = [];
+            let newCloseHours = [];
 
-        for (let i = 0; i < 7; i++) {
-            newOpenHours.push(new Date('2014-08-18T00:00:00'))
-            newCloseHours.push(new Date('2014-08-18T00:00:00'))
+            for (let i = 0; i < 7; i++) {
+                newOpenHours.push(new Date('2014-08-18T00:00:00'));
+                newCloseHours.push(new Date('2014-08-18T00:00:00'));
+            }
+            setOpenHours(newOpenHours);
+            setCloseHours(newCloseHours);
         }
-        setOpenHours(newOpenHours);
-        setCloseHours(newCloseHours);
     }, []);
 
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
