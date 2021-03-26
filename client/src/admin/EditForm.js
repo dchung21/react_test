@@ -38,6 +38,19 @@ export default function EditForm(props) {
 		closeHoursObj.setMinutes(c[1]);
 		fillCloseHours[i] = closeHoursObj;
 	}
+
+	let fillServices = [];
+	let fillPayment = [];
+	let fillLanguage = [];
+	for (let i = 0; i < data.services.length; i++) {
+		fillServices[i] = data.services[i].toString();
+	}
+	for (let i = 0; i < data.payment.length; i++) {
+		fillPayment[i] = data.payment[i].toString();
+	}
+	for (let i = 0; i < data.language.length; i++) {
+		fillLanguage[i] = data.language[i].toString();
+	}
 	
 	let info = {
 		clinicName: `${props.match.params.clinic}`,
@@ -46,16 +59,16 @@ export default function EditForm(props) {
 		state: data.rows[0].state,
 		zip: data.rows[0].zipcode,
 		phone: data.rows[0].phone,
-		services: data.services,
-		payment: data.payment,
-		lang: data.language,
+		services: fillServices,
+		payment: fillPayment,
+		lang: fillLanguage,
 		openHours: fillOpenHours,
 		closeHours: fillCloseHours
 	};
 
 
 	return(
-		<ClinicForm data={info} />
+		<ClinicForm data={info} endpoint={"./edit"}/>
 	)
 
 }
