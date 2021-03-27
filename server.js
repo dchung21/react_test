@@ -46,77 +46,10 @@ app.get('/logout', function(req, res){
   });
 
 
- app.post('/edit', isLoggedIn, function(req, res) {
-    let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
-                `%20${req.body.city}` +
-                `%20${req.body.state}` +
-                `%20${req.body.zip}` + 
-                `&key=${process.env.GOOGLE_MAPS_API}`;
 
-    console.log(req.body);
-
-    axios.get(geoapi).then(function (response, body) {
-        if (response.status == 200) {
-        let geocoord = response.data.results[0].geometry.location;
-        console.log(geocoord);
-          
-        let queryServices = "";
-        let queryLang = "";
-        let queryPayment = "";
-        let queryHours = "";
-        
-        let params = [geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng, req.body.clinicName,
-                    req.body.address, req.body.city, req.body.zip, req.body.phone, req.body.clinicName];
-
-        console.log("type", typeof(req.body.openHours[0]));
-        for (x of req.body.services) {
-            queryServices += "UPDATE ClinicServices SET services=? WHERE clinic=?;\n";
-            params.push(x);
-			params.push(req.body.clinicName);
-        }
-
-        for (x of req.body.lang) {
-            queryLang += "UPDATE ClinicLanguage SET language=? WHERE clinic=?;\n";
-            params.push(x);
-			params.push(req.body.clinicName);
-        }
-
-        for (x of req.body.payment) {
-            queryPayment += "UPDATE ClinicPayment SET payment=? WHERE clinic=?;\n";
-            params.push(x);
-			params.push(req.body.clinicName);
-        }
-
-        for (let i = 0; i < 7; i++) {
-            queryHours += "UPDATE ClinicHours SET hour_open=?, hour_close=? WHERE clinic=? AND day_of_week=?;\n";
-            params.push(req.body.openHours[i]);
-            params.push(req.body.closeHours[i]);
-			params.push(req.body.clinicName);
-			params.push(i+1);
-        }
-        let query = "START TRANSACTION;\n" +
-                    "UPDATE ClinicCoords SET longitude=?, latitude=?, coords=POINT(?,?) WHERE clinic=?;\n" +
-                    "UPDATE ClinicAddress SET address=?, city=?, zipcode=?, phone=? WHERE clinic=?;\n" + 
-                    queryServices +
-                    queryLang +
-                    queryPayment +
-                    queryHours +
-                    "COMMIT;"
  
-        console.log(query);
-        
-        pool.query(query, params, function (err, result) {
-            if (err)
-               throw err;
+app.post('/test', function(req, res) {
 
-            console.log(result); 
-          });
-      }
-  });
-})
-
-
-app.post('/test', isLoggedIn, function(req, res) {
     let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
                 `%20${req.body.city}` +
                 `%20${req.body.state}` +
@@ -124,6 +57,7 @@ app.post('/test', isLoggedIn, function(req, res) {
                 `&key=${process.env.GOOGLE_MAPS_API}`;
 
     console.log(req.body);
+    console.log(req.body.newServices);
 
     axios.get(geoapi).then(function (response, body) {
         if (response.status == 200) {
@@ -138,20 +72,19 @@ app.post('/test', isLoggedIn, function(req, res) {
         let params = [req.body.clinicName, geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng,
                     req.body.clinicName, req.body.address, req.body.city, req.body.zip, req.body.phone];
 
-        console.log("type", typeof(req.body.openHours[0]));
-        for (x of req.body.services) {
+        for (x in req.body.newServices) {
             queryServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
             params.push(req.body.clinicName);
             params.push(x);
         }
 
-        for (x of req.body.lang) {
+        for (x in req.body.newLang) {
             queryLang += "INSERT INTO ClinicLanguage(clinic, language) VALUES (?, ?);\n";
             params.push(req.body.clinicName);
             params.push(x);
         }
 
-        for (x of req.body.payment) {
+        for (x in req.body.newPayment) {
             queryPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
             params.push(req.body.clinicName);
             params.push(x);
@@ -175,12 +108,14 @@ app.post('/test', isLoggedIn, function(req, res) {
  
         console.log(query);
         
+        /*
         pool.query(query, params, function (err, result) {
             if (err)
                throw err;
 
             res.send("Successfully added clinic");
           });
+          */
       }
   });
 
