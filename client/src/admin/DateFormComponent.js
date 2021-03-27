@@ -3,7 +3,10 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers'
 import FormGroup from '@material-ui/core/FormGroup';
 import FormLabel from '@material-ui/core/FormLabel';
-export default function DateFormComponent(props) {
+
+
+export const DateFormComponent = React.memo((props) => {
+
     useEffect(() => {
         if (props.openHours.length == 0 && props.closeHours.length == 0) {
             let newOpenHours = [];
@@ -74,4 +77,4 @@ export default function DateFormComponent(props) {
             </FormGroup>
         </div>
     );
-}
+});
