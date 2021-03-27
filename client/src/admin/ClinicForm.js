@@ -38,10 +38,67 @@ export default function ClinicForm(props) {
     const [openHours, setOpenHours] = useState(props.data.openHours);
     const [closeHours, setCloseHours] = useState(props.data.closeHours);
 
+	// store original info
+	let prevServices = props.data.services;
+	let prevPayment = props.data.payment;
+	let prevLang = props.data.lang;
+
+
     let history = useHistory();
 
+	/////////////////////////////////////////////////////////////////////////
+	// handles submission into "/edit" endpoint
+	const handleEdit = (e) => {
+		e.preventDefault();
 
-    
+        //converting the date type into sql time type
+        let convertedOpenHours = openHours.map((data) => (
+            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
+        ));
+
+        let convertedCloseHours = closeHours.map((data) => (
+            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
+        ));
+
+		// filter out services, payment, lang changes
+		let delServices = prevServices.filter(x => !services.includes(x));
+		let addServices = services.filter(x => !prevServices.includes(x));
+
+		let delPayment = prevPayment.filter(x => !payment.includes(x));
+		let addPayment = payment.filter(x => !prevPayment.includes(x));
+
+		let delLang = prevLang.filter(x => !lang.includes(x));
+		let addLang = lang.filter(x => !prevLang.includes(x));
+
+
+        //we package the data into an object
+		let data = {
+			clinicName: clinicName,
+			address: address,
+			city: city,
+			state: state,
+			zip: zip,
+			phone: phone,
+			delServices: delServices,
+			addServices: addServices,
+			delPayment: delPayment,
+			addPayment: addPayment,
+			delLang: delLang,
+			addLang: addLang,
+            openHours: convertedOpenHours,
+            closeHours: convertedCloseHours
+		};
+
+        //should have a success indicator, then we redirect to the edit page instead. 
+		Axios.post(props.endpoint, data).then( (res) => {
+            console.log(res);
+            if (res.status == 200) {
+                history.push("/manage");
+            }
+		});
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////
 
     //handles submission into endpoint
 	const handleSubmit = (e) => {

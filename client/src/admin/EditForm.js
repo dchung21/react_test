@@ -43,13 +43,13 @@ export default function EditForm(props) {
 	let fillPayment = [];
 	let fillLanguage = [];
 	for (let i = 0; i < data.services.length; i++) {
-		fillServices[i] = data.services[i].toString();
+		fillServices[i] = data.services[i].services.toString();
 	}
 	for (let i = 0; i < data.payment.length; i++) {
-		fillPayment[i] = data.payment[i].toString();
+		fillPayment[i] = data.payment[i].payment.toString();
 	}
 	for (let i = 0; i < data.language.length; i++) {
-		fillLanguage[i] = data.language[i].toString();
+		fillLanguage[i] = data.language[i].language.toString();
 	}
 	
 	let info = {
@@ -68,7 +68,7 @@ export default function EditForm(props) {
 
 
 	return(
-		<ClinicForm data={info} endpoint={"./edit"}/>
+		<ClinicForm data={info} endpoint={"/edit"}/>
 	)
 
 }

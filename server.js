@@ -88,11 +88,11 @@ app.get('/logout', function(req, res){
         }
 
         for (let i = 0; i < 7; i++) {
-            queryHours += "UPDATE ClinicHours SET day_of_week=?, hour_open=?, hour_close=? WHERE clinic=?;\n";
-            params.push(i+1);
+            queryHours += "UPDATE ClinicHours SET hour_open=?, hour_close=? WHERE clinic=? AND day_of_week=?;\n";
             params.push(req.body.openHours[i]);
             params.push(req.body.closeHours[i]);
 			params.push(req.body.clinicName);
+			params.push(i+1);
         }
         let query = "START TRANSACTION;\n" +
                     "UPDATE ClinicCoords SET longitude=?, latitude=?, coords=POINT(?,?) WHERE clinic=?;\n" +
