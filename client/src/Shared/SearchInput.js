@@ -60,8 +60,8 @@ export default function SearchInput(props) {
         			inputProps={{ 'aria-label': 'search google maps' }}
 					onChange = {handleChangeSearch}
       			/>
-                        Near
                         <Divider className={classes.divider} orientation="vertical" />
+                        Near
                         <InputBase
        				 className={classes.input}
            	    	placeholder="Zipcode or City"

@@ -5,8 +5,8 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControl from '@material-ui/core/FormControl';
 import { FormLabel } from '@material-ui/core';
 
-export default function CheckboxFormComponent(props) {
-
+export const CheckboxFormComponent = React.memo((props) => {
+    console.log("rendering")
     /*
     a generic function to add/remove checked features
     params
@@ -52,4 +52,6 @@ export default function CheckboxFormComponent(props) {
             </FormControl>
         </div>
     )
-}
+});
+
+
