@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Axios from "axios";
 import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox';
 import styles from './AddForm.module.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { FormHelperText, FormLabel } from "@material-ui/core";
-import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import { useHistory } from "react-router-dom";
+
+import CheckboxFormComponent from './CheckboxFormComponent.js';
+import TextFormComponent from './TextFormComponent.js';
+import DateFormComponent from './DateFormComponent.js';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,24 +38,10 @@ export default function ClinicForm(props) {
     const [openHours, setOpenHours] = useState(props.data.openHours);
     const [closeHours, setCloseHours] = useState(props.data.closeHours);
 
-    let listServices, listLang, listPayment;
-    useEffect(() => {
-        if (openHours.length == 0 && closeHours == 0) {
-            let newOpenHours = [];
-            let newCloseHours = [];
+    let history = useHistory();
 
-            for (let i = 0; i < 7; i++) {
-                newOpenHours.push(new Date('2014-08-18T00:00:00'));
-                newCloseHours.push(new Date('2014-08-18T00:00:00'));
-            }
-            setOpenHours(newOpenHours);
-            setCloseHours(newCloseHours);
-        }
 
-        listServices = constructCheckbox(services, "Services", setServices); 
-    }, []);
-
-    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    
 
     //handles submission into endpoint
 	const handleSubmit = (e) => {
@@ -89,64 +73,13 @@ export default function ClinicForm(props) {
 
         //should have a success indicator, then we redirect to the edit page instead. 
 		Axios.post(props.endpoint, data).then( (res) => {
-            console.log("res");
+            console.log(res);
+            if (res.status == 200) {
+                history.push("/manage");
+            }
 		});
 	}
 
-
-    /*
-    a generic function to add/remove checked features
-    params
-        e: event
-        arr: the array we will update -- should be services/lang/payment
-        str: the string corresponding to the filters object
-        f: the corresponding function to update the state, setServices, setLang...
-    */
-	const genericChange = (e, arr, str, f) => {
-		let clone = [...arr];
-
-		if (e.target.checked) {
-			clone.push(e.target.value)
-		}
-
-		else {
-			let i = clone.indexOf(e.target.value);
-			clone.splice(i, 1);	
-		}
-
-		f(clone);
-	}
-
-    /*
-    The function to update the dates
-    params:
-        date: a type date var
-        arr: the corresponding array -- should be openHours, closeHours
-        f: the corresponding function to update the state, setOpenHours, setCloseHours...
-    */
-    const dateChange = (date, arr, k, f) => {
-        let copy = [...arr];
-        copy[k] = date;
-
-
-        f(copy);
-    }
-
-    const constructCheckbox = (arr, str, f) => {
-        let checkboxes = filters[str].map((data, k) => (
-            <FormControlLabel index={data + k}
-                                control = {<Checkbox id = {props.filterName}
-                                            value={data}
-                                            onChange = {e => genericChange(e, arr, f)}
-                                            checked={arr.includes(data)}
-                                            />}
-                                label={data}
-                                onChange = {props.onChange}
-            />
-        ))
-
-        return checkboxes;
-    }
 
     let filters = {
         Services: 
@@ -163,42 +96,6 @@ export default function ClinicForm(props) {
         ["Vietnamese", "Korean", "Tagalog", "Spanish", "Russian", "Arabic"]
     }
 
-    listServices = constructCheckbox(services, "Services", setServices);
-    listPayment = constructCheckbox(payment, "Insurance & Payment", setPayment);
-    listLang = constructCheckbox(lang, "Languages", setLang);
-
-
-    let hourSelectors = [];
-
-    for (let i = 0; i < 7; i++) {
-        hourSelectors.push(
-            <div>
-               <KeyboardTimePicker
-                index = {"open" + i}
-                margin="normal"
-                id="time-picker"
-                label={days[i] + " Open"}
-                value = {openHours[i]}
-                onChange = {date => dateChange(date, openHours, i, setOpenHours)}
-                KeyboardButtonProps={{
-                'aria-label': 'change time',
-                }}
-            /> 
-
-                <KeyboardTimePicker
-                    index = {"close" + i}
-                    margin="normal"
-                    id="time-picker"
-                    label={days[i] + " Close"}
-                    value = {closeHours[i]}
-                    onChange = {date => dateChange(date, closeHours, i, setCloseHours)}
-                    KeyboardButtonProps={{
-                    'aria-label': 'change time',
-                     }}
-                    />  
-            </div>
-        )
-    }
 
 	
     const classes = useStyles();
@@ -208,54 +105,42 @@ export default function ClinicForm(props) {
         <h1>Add a Clinic</h1>
         <form className = {classes.root} onSubmit = {handleSubmit}>
 			<FormControl>
-                <div className={styles.formContent}>
-                    <FormLabel>Information</FormLabel>
-                    <FormGroup row>
-                    <TextField id="clinicName" label="Name of Clinic" value={clinicName} placeholder = "Name of the Clinic" variant="outlined" onInput = {e => setClinicName(e.target.value)} />
-                    <TextField id="address" label="Address" value={address} variant="outlined" placeholder = "Address (123 Name of Street)" onInput = {e => setAddress(e.target.value)} />
-                    <TextField id="city" label="City" value={city} variant="outlined" placeholder = "Los Angeles" onInput = {e => setCity(e.target.value)} />
-                    </FormGroup>
-                    <FormGroup row>
-                    <TextField id="state" label="State" value={state} variant="outlined" placeholder = "CA" onInput = {e => setState(e.target.value) }/>
-                    <TextField id="zipcode" label="Zipcode" value={zip} variant="outlined" placeholder = "12345" onInput = {e => setZip(e.target.value)} />
-			        <TextField id="phone" label="Phone" value={phone} variant="outlined" placeholder = "415-123-4567" onInput = {e => setPhone(e.target.value)} />
-                    </FormGroup>
-                    <TextField style = {{width: 632}} id="website" label="Website" value={website} variant="outlined" placeholder = "https://google.com" onInput = {e => setWebsite(e.target.value)} />
-                </div>
+                <TextFormComponent
+                    clinicName={clinicName}
+                    setClinicName={setClinicName}
+                    address={address}
+                    setAddress={setAddress}
+                    city={city}
+                    setCity={setCity}
+                    state={state}
+                    setState={setState}
+                    zip={zip}
+                    setZip={setZip}
+                    phone={phone}
+                    setPhone={setPhone}
+                    website={website}
+                    setWebsite={setWebsite}
+                />
                 
-                <div className={styles.formContent}>
 
-                <FormLabel>Hours</FormLabel>
-                <FormGroup>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    {hourSelectors}
-                </MuiPickersUtilsProvider>
-                </FormGroup>
-                </div>
+                <DateFormComponent openHours={openHours} closeHours={closeHours} setOpenHours={setOpenHours} setCloseHours={setCloseHours}/>
 
                 <div className={styles.formContent}>
-                <div>
-                    <FormControl>
-			            <FormLabel>Services</FormLabel>
-                            <FormGroup>
-                            {listServices}
-                            </FormGroup>
-                    </FormControl>
-               </div> 
 
-                <div>
-			        <FormLabel>Payment Options</FormLabel>
-                    <FormGroup>
-			        {listPayment}
-                    </FormGroup>
-                </div>
+               <CheckboxFormComponent title={"Services"}
+                                        checked={services}
+                                        checkChange={setServices}
+                                        filter={filters["Services"]} />
 
-                <div>
-			        <FormLabel>Languages</FormLabel>
-                    <FormGroup>
-			        {listLang}
-                    </FormGroup>
-                </div>
+                <CheckboxFormComponent title={"Payment Options"}
+                                        checked={payment}
+                                        checkChange={setPayment}
+                                        filter={filters["Insurance & Payment"]} />
+
+                <CheckboxFormComponent title={"Languages"}
+                                        checked={lang}
+                                        checkChange={setLang}
+                                        filter={filters["Languages"]} />
 
                 </div>
 			    <Button type="submit" value="Submit" variant="contained" color="secondary">Submit</Button>
