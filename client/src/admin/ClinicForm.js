@@ -100,9 +100,12 @@ export default function ClinicForm(props) {
             state: state,
             zip: zip,
             phone: phone,
-            services: services,
-            payment: payment,
-            lang: lang,
+            newServices: services,
+            newPayment: payment,
+            newLang: lang,
+            ogServices: props.data.services,
+            ogPayment: props.data.payment,
+            ogLang: props.data.lang,
             openHours: convertedOpenHours,
             closeHours: convertedCloseHours
         };
