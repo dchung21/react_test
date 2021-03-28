@@ -45,6 +45,108 @@ app.get('/logout', function(req, res){
     res.redirect('/');
   });
 
+app.post('/edit', isLoggedIn, function(req, res) {
+    let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
+                `%20${req.body.city}` +
+                `%20${req.body.state}` +
+                `%20${req.body.zip}` + 
+                `&key=${process.env.GOOGLE_MAPS_API}`;
+
+    console.log(req.body);
+
+    axios.get(geoapi).then(function (response, body) {
+        if (response.status == 200) {
+        let geocoord = response.data.results[0].geometry.location;
+        console.log(geocoord);
+
+		let delServices = req.body.ogServices.filter(x => !req.body.newServices.includes(x));
+		let addServices = req.body.newServices.filter(x => !req.body.ogServices.includes(x));
+
+		let delPayment = req.body.ogPayment.filter(x => !req.body.newPayment.includes(x));
+		let addPayment = req.body.newPayment.filter(x => !req.body.ogPayment.includes(x));
+
+		let delLang = req.body.ogLang.filter(x => !req.body.newLang.includes(x));
+		let addLang = req.body.newLang.filter(x => !req.body.ogLang.includes(x));
+          
+        let queryAddServices = "";
+        let queryDelServices = "";
+        let queryAddLang = "";
+        let queryDelLang = "";
+        let queryAddPayment = "";
+        let queryDelPayment = "";
+        let queryHours = "";
+        
+        let params = [geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng, req.body.clinicName,
+                    req.body.address, req.body.city, req.body.zip, req.body.phone, req.body.clinicName];
+
+        console.log("type", typeof(req.body.openHours[0]));
+
+        for (x in addServices) {
+            queryAddServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
+            params.push(req.body.clinicName);
+            params.push(x);
+        }
+		for (x of delServices) {
+            queryDelServices += "DELETE FROM ClinicServices WHERE clinic=? AND services=?;\n";
+			params.push(req.body.clinicName);
+			params.push(x);
+        }
+		
+
+        for (x in addLang) {
+            queryAddLang += "INSERT INTO ClinicLanguage(clinic, language) VALUES (?, ?);\n";
+            params.push(req.body.clinicName);
+            params.push(x);
+        }
+		for (x in delLang) {
+            queryDelLang += "DELETE FROM ClinicLanguage WHERE clinic=? AND language=?;\n";
+            params.push(req.body.clinicName);
+            params.push(x);
+        }
+
+
+        for (x in addPayment) {
+            queryAddPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
+            params.push(req.body.clinicName);
+            params.push(x);
+        }
+		for (x in delPayment) {
+            queryDelPayment += "DELETE FROM ClinicPayment WHERE clinic=? AND payment=?;\n";
+            params.push(req.body.clinicName);
+            params.push(x);
+        }
+		
+
+        for (let i = 0; i < 7; i++) {
+            queryHours += "UPDATE ClinicHours SET hour_open=?, hour_close=? WHERE clinic=? AND day_of_week=?;\n";
+            params.push(req.body.openHours[i]);
+            params.push(req.body.closeHours[i]);
+			params.push(req.body.clinicName);
+			params.push(i+1);
+        }
+        let query = "START TRANSACTION;\n" +
+                    "UPDATE ClinicCoords SET longitude=?, latitude=?, coords=POINT(?,?) WHERE clinic=?;\n" +
+                    "UPDATE ClinicAddress SET address=?, city=?, zipcode=?, phone=? WHERE clinic=?;\n" + 
+                    queryAddServices +
+                    queryDelServices +
+                    queryAddLang +
+                    queryDelLang +
+                    queryAddPayment +
+                    queryDelPayment +
+                    queryHours +
+                    "COMMIT;"
+ 
+        console.log(query);
+        
+        pool.query(query, params, function (err, result) {
+            if (err)
+               throw err;
+
+            console.log(result); 
+          });
+      }
+  });
+})
 
 
  
