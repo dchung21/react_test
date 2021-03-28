@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
-import Loader from 'react-loader-spinner'
+import Loader from 'react-loader-spinner';
 import { useHistory } from "react-router-dom";
 
 export default function ClinicContainer(props) {
@@ -31,8 +31,14 @@ export default function ClinicContainer(props) {
 	// Temporary: maps to results pages
 	///////////////////////////////////////////////////////////////////
 	function handleClick(param) {
-    	history.push(`/result/${param}`);
+    	history.push(`/edit/${param}`);
 	}
+
+
+	///////////////////////////////////////////////////////////////////
+
+
+	///////////////////////////////////////////////////////////////////////
 
 	//if we're still loading the results, then display a spinner
 	if (loading) {
@@ -52,7 +58,7 @@ export default function ClinicContainer(props) {
 					<li key={data.clinic}>
 						<button type="button" 
 								onClick={()=>handleClick(data.clinic)}>
-										 {data.clinic} 
+									 {data.clinic} 
 						</button>
 					</li>)}
 			</ul>	
