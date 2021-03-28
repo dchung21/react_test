@@ -55,6 +55,10 @@ export default function FilterList (props) {
 		);
 	}
 
+    const onChange = (e) => {
+        setDistance(e.target.value);
+        props.onDistanceChange(e);
+    }
 
 	return (
 		<div className = {styles.filters}>	
@@ -66,7 +70,7 @@ export default function FilterList (props) {
 			    </Typography>
 
 			    <Select value={distance}
-				    onChange={props.onDistanceChange}>
+				    onChange={onChange}>
 				    {distances}
 			    </Select>
 			</div>

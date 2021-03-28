@@ -1,5 +1,5 @@
 import React, { useEffect, useState }  from 'react';
-import SearchInput from '../../Shared/SearchInput.js';
+import { SearchInput } from '../../Shared/SearchInput.js';
 import Map from 'pigeon-maps';
 import Marker from 'pigeon-marker';
 import SimpleList from './SideLinks.js';

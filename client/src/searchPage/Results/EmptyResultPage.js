@@ -1,6 +1,6 @@
 import React from 'react';
 import Logo from '../../Shared/Logo.js';
-import SearchInput from '../../Shared/SearchInput.js';
+import { SearchInput } from '../../Shared/SearchInput.js';
 import styles from './resultPage.module.css';
 
 export default function EmptyResultPage (props) {

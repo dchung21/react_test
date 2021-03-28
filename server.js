@@ -58,7 +58,6 @@ app.post('/test', function(req, res) {
     axios.get(geoapi).then(function (response, body) {
         if (response.status == 200) {
         let geocoord = response.data.results[0].geometry.location;
-        console.log(geocoord);
           
         let queryServices = "";
         let queryLang = "";
