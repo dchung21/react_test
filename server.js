@@ -67,7 +67,8 @@ app.post('/edit', isLoggedIn, function(req, res) {
 
 		let delLang = req.body.ogLang.filter(x => !req.body.newLang.includes(x));
 		let addLang = req.body.newLang.filter(x => !req.body.ogLang.includes(x));
-          
+
+
         let queryAddServices = "";
         let queryDelServices = "";
         let queryAddLang = "";
@@ -77,43 +78,43 @@ app.post('/edit', isLoggedIn, function(req, res) {
         let queryHours = "";
         
         let params = [geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng, req.body.clinicName,
-                    req.body.address, req.body.city, req.body.zip, req.body.phone, req.body.clinicName];
-
+                    req.body.address, req.body.city, req.body.state, req.body.zip, req.body.phone, req.body.clinicName];
+		
         console.log("type", typeof(req.body.openHours[0]));
-
-        for (x in addServices) {
+		
+        for (let i = 0; i < addServices.length; i++) {
             queryAddServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
             params.push(req.body.clinicName);
-            params.push(x);
+            params.push(addServices[i]);
         }
-		for (x of delServices) {
+		for (let i = 0; i < delServices.length; i++) {
             queryDelServices += "DELETE FROM ClinicServices WHERE clinic=? AND services=?;\n";
 			params.push(req.body.clinicName);
-			params.push(x);
+			params.push(delServices[i]);
         }
 		
 
-        for (x in addLang) {
+        for (let i = 0; i < addLang.length; i++) {
             queryAddLang += "INSERT INTO ClinicLanguage(clinic, language) VALUES (?, ?);\n";
             params.push(req.body.clinicName);
-            params.push(x);
+            params.push(addLang[i]);
         }
-		for (x in delLang) {
+		for (let i = 0; i < delLang.length; i++) {
             queryDelLang += "DELETE FROM ClinicLanguage WHERE clinic=? AND language=?;\n";
             params.push(req.body.clinicName);
-            params.push(x);
+            params.push(delLang[0]);
         }
 
 
-        for (x in addPayment) {
+        for (let i = 0; i < addPayment.length; i++) {
             queryAddPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
             params.push(req.body.clinicName);
-            params.push(x);
+            params.push(addPayment[0]);
         }
-		for (x in delPayment) {
+		for (let i = 0; i < delPayment.length; i++) {
             queryDelPayment += "DELETE FROM ClinicPayment WHERE clinic=? AND payment=?;\n";
             params.push(req.body.clinicName);
-            params.push(x);
+            params.push(delPayment[0]);
         }
 		
 
@@ -123,10 +124,11 @@ app.post('/edit', isLoggedIn, function(req, res) {
             params.push(req.body.closeHours[i]);
 			params.push(req.body.clinicName);
 			params.push(i+1);
+			console.log(1 + req.body.openHours[i] + req.body.closeHours[i]);
         }
         let query = "START TRANSACTION;\n" +
                     "UPDATE ClinicCoords SET longitude=?, latitude=?, coords=POINT(?,?) WHERE clinic=?;\n" +
-                    "UPDATE ClinicAddress SET address=?, city=?, zipcode=?, phone=? WHERE clinic=?;\n" + 
+                    "UPDATE ClinicAddress SET address=?, city=?, state=?, zipcode=?, phone=? WHERE clinic=?;\n" + 
                     queryAddServices +
                     queryDelServices +
                     queryAddLang +
