@@ -27,14 +27,16 @@ export default function EditForm(props) {
 	for (let i = 0; i < 7; i++) {
 		let o = data.rows[i].hour_open.split(/[:]/);
 		const openHoursObj = new Date('2014-08-18T00:00:00');
-		openHoursObj.setHours(o[0]);
+        let h = (parseInt(o[0]) + 17) % 24;
+		openHoursObj.setHours(h);
 		openHoursObj.setMinutes(o[1]);
 		//dateObject.setSeconds(s[2]);
 		fillOpenHours[i] = openHoursObj;
 
 		let c = data.rows[i].hour_close.split(/[:]/);
 		const closeHoursObj = new Date('2014-08-18T00:00:00');
-		closeHoursObj.setHours(c[0]);
+        h = (parseInt(c[0]) + 17) % 24;
+		closeHoursObj.setHours(h);
 		closeHoursObj.setMinutes(c[1]);
 		fillCloseHours[i] = closeHoursObj;
 	}

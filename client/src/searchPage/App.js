@@ -1,10 +1,10 @@
 //This component is the search page, basically the parent component to everything on that page
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import styles from './App.module.css';
-import MapBox from './Map/Map.js';
+import { MapBox } from './Map/Map.js';
 import ResultList from './Results/ResultList.js';
-import SearchInput from '../Shared/SearchInput.js';
+import { SearchInput } from '../Shared/SearchInput.js';
 import FilterList from './Filters/FilterList.js';
 import FilterModal from './Filters/FilterModal.js';
 import Logo from '../Shared/Logo.js';
@@ -26,7 +26,7 @@ export default function App(props) {
 
     //media query stuff
     const isSmall = useMediaQuery('(min-width:600px)');
-    console.log(!isSmall);
+
     let history = useHistory();
     useEffect(() => {
         async function fetchData() {
@@ -66,7 +66,7 @@ export default function App(props) {
     */
     const handleSubmit = (data) => {
         history.push({ pathname: `/search/${data.address}` });
-        history.go();
+        //history.go();
     }
 
     /*
@@ -142,7 +142,7 @@ export default function App(props) {
         <div className={styles.container}>
             <div className={styles.header}>
                 <Logo name={styles.searchLogo} />
-                <SearchInput handleSubmit={handleSubmit} />
+                <SearchInput />
             </div>
 
             <div className={styles.body}>

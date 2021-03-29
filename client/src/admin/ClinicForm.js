@@ -79,17 +79,24 @@ export default function ClinicForm(props) {
         [setCloseHours]
     );
 
+    const convertHours = (date) => {
+        let convertedh = (date.getHours() + 7) % 24;
+        date.setHours(convertedh);
+        return date;
+    }
     //handles submission into endpoint
     const handleSubmit = (e) => {
         e.preventDefault();
 
         //converting the date type into sql time type
         let convertedOpenHours = openHours.map((data) => (
-            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
+            //convertHours(data).toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
+            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1] 
         ));
 
         let convertedCloseHours = closeHours.map((data) => (
-            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
+            //convertHours(data).toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
+            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1] 
         ));
 
         //we package the data into an object

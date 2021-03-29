@@ -73,7 +73,7 @@ app.post('/delete', isLoggedIn, function(req, res) {
      
 })
 
-app.post('/edit', isLoggedIn, function(req, res) {
+app.post('/edit', function(req, res) {
     let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
                 `%20${req.body.city}` +
                 `%20${req.body.state}` +
@@ -85,7 +85,6 @@ app.post('/edit', isLoggedIn, function(req, res) {
     axios.get(geoapi).then(function (response, body) {
         if (response.status == 200) {
         let geocoord = response.data.results[0].geometry.location;
-        console.log(geocoord);
 
 		let delServices = req.body.ogServices.filter(x => !req.body.newServices.includes(x));
 		let addServices = req.body.newServices.filter(x => !req.body.ogServices.includes(x));
@@ -108,7 +107,6 @@ app.post('/edit', isLoggedIn, function(req, res) {
         let params = [geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng, req.body.clinicName,
                     req.body.address, req.body.city, req.body.state, req.body.zip, req.body.phone, req.body.clinicName];
 		
-        console.log("type", typeof(req.body.openHours[0]));
 		
         for (let i = 0; i < addServices.length; i++) {
             queryAddServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
@@ -130,19 +128,19 @@ app.post('/edit', isLoggedIn, function(req, res) {
 		for (let i = 0; i < delLang.length; i++) {
             queryDelLang += "DELETE FROM ClinicLanguage WHERE clinic=? AND language=?;\n";
             params.push(req.body.clinicName);
-            params.push(delLang[0]);
+            params.push(delLang[i]);
         }
 
 
         for (let i = 0; i < addPayment.length; i++) {
             queryAddPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
             params.push(req.body.clinicName);
-            params.push(addPayment[0]);
+            params.push(addPayment[i]);
         }
 		for (let i = 0; i < delPayment.length; i++) {
             queryDelPayment += "DELETE FROM ClinicPayment WHERE clinic=? AND payment=?;\n";
             params.push(req.body.clinicName);
-            params.push(delPayment[0]);
+            params.push(delPayment[i]);
         }
 		
 
@@ -152,7 +150,6 @@ app.post('/edit', isLoggedIn, function(req, res) {
             params.push(req.body.closeHours[i]);
 			params.push(req.body.clinicName);
 			params.push(i+1);
-			console.log(1 + req.body.openHours[i] + req.body.closeHours[i]);
         }
         let query = "START TRANSACTION;\n" +
                     "UPDATE ClinicCoords SET longitude=?, latitude=?, coords=POINT(?,?) WHERE clinic=?;\n" +
@@ -166,14 +163,17 @@ app.post('/edit', isLoggedIn, function(req, res) {
                     queryHours +
                     "COMMIT;"
  
-        console.log(query);
+        //console.log(query);
+        //console.log(req.body.openHours);
+        
         
         pool.query(query, params, function (err, result) {
             if (err)
                throw err;
 
-            console.log(result); 
+            //console.log(result); 
           });
+        
       }
   });
 })
@@ -194,7 +194,6 @@ app.post('/test', function(req, res) {
     axios.get(geoapi).then(function (response, body) {
         if (response.status == 200) {
         let geocoord = response.data.results[0].geometry.location;
-        console.log(geocoord);
           
         let queryServices = "";
         let queryLang = "";
@@ -240,14 +239,14 @@ app.post('/test', function(req, res) {
  
         console.log(query);
         
-        /*
+        
         pool.query(query, params, function (err, result) {
             if (err)
                throw err;
 
             res.send("Successfully added clinic");
           });
-          */
+          
       }
   });
 

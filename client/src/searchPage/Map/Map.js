@@ -10,7 +10,8 @@ function mapTileProvider (x, y, z, dpr) {
 }
 
 
-export default function MapBox(props) {	
+export const MapBox = React.memo((props) => {
+    console.log("rendering")
         //this doesn't work....
 	const handleMarkerClick = (event) => {
 		/*
@@ -59,5 +60,5 @@ export default function MapBox(props) {
 		)
 	
         return (<div className={props.cn}>{map}</div>);
-    }
+});
 

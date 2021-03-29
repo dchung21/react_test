@@ -5,10 +5,15 @@ import Divider from '@material-ui/core/Divider';
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
 
 
-export default function SearchInput(props) {
+export const SearchInput = React.memo((props) => {
+    console.log("rendering");
+
 	const [address, setAddress] = React.useState("");
+
+    const history = useHistory();
 
 	const handleChangeSearch = (e) => {
 		setAddress(e.target.value);
@@ -17,10 +22,9 @@ export default function SearchInput(props) {
   
 	const handleSubmit =(e) => {
 		e.preventDefault();
-		let data = {
-			address: address
-		};
-		props.handleSubmit(data);
+
+        history.push({ pathname: `/search/${address}`} );
+        history.go();
 	}
   
 
@@ -78,5 +82,5 @@ export default function SearchInput(props) {
     		</Paper>
         </div>
   );
-}
+});
 
