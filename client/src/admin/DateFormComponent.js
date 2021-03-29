@@ -3,7 +3,8 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers'
 import FormGroup from '@material-ui/core/FormGroup';
 import FormLabel from '@material-ui/core/FormLabel';
-
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 export const DateFormComponent = React.memo((props) => {
 
@@ -68,13 +69,15 @@ export const DateFormComponent = React.memo((props) => {
     }
 
     return(
-        <div>
+        <Card>
+            <CardContent>
             <FormLabel>Hours</FormLabel>
             <FormGroup>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     {hourSelectors}
                 </MuiPickersUtilsProvider>
             </FormGroup>
-        </div>
+            </CardContent>
+        </Card>
     );
 });

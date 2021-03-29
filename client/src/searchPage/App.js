@@ -62,14 +62,6 @@ export default function App(props) {
     }
 
     /*
-        Function handles searching of an address and reloads the page
-    */
-    const handleSubmit = (data) => {
-        history.push({ pathname: `/search/${data.address}` });
-        //history.go();
-    }
-
-    /*
         Function applies filters and refreshes the clinics on the page
     */
     const filterClinic = (event) => {

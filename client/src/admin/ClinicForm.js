@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import Axios from "axios";
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button'
-import styles from './AddForm.module.css';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 
@@ -79,11 +78,6 @@ export default function ClinicForm(props) {
         [setCloseHours]
     );
 
-    const convertHours = (date) => {
-        let convertedh = (date.getHours() + 7) % 24;
-        date.setHours(convertedh);
-        return date;
-    }
     //handles submission into endpoint
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -122,6 +116,7 @@ export default function ClinicForm(props) {
             console.log(res);
             if (res.status == 200) {
                 history.push("/manage");
+                history.go();
             }
         });
     }
@@ -131,8 +126,6 @@ export default function ClinicForm(props) {
     const classes = useStyles();
 
     return (
-        <div className={styles.root}>
-            <h1>Add a Clinic</h1>
             <form className={classes.root} onSubmit={handleSubmit}>
                 <FormControl>
                     <TextFormComponent
@@ -158,7 +151,7 @@ export default function ClinicForm(props) {
                         setOpenHours={onChangeOpenHours}
                         setCloseHours={onChangeCloseHours} />
 
-                    <div className={styles.formContent}>
+                    <div>
 
                         <CheckboxFormComponent title={"Services"}
                             checked={services}
@@ -180,6 +173,5 @@ export default function ClinicForm(props) {
                 </FormControl>
 
             </form>
-        </div>
     );
 }

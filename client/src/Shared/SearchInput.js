@@ -65,7 +65,7 @@ export const SearchInput = React.memo((props) => {
 					onChange = {handleChangeSearch}
       			/>
                         <Divider className={classes.divider} orientation="vertical" />
-                        Near
+                        <text style = {{fontFamily : "Arial"}}>Near</text>
                         <InputBase
        				 className={classes.input}
            	    	placeholder="Zipcode or City"

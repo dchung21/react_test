@@ -2,6 +2,7 @@ import React, { useEffect, useState }  from 'react';
 import ClinicForm from './ClinicForm.js';
 import Axios from 'axios';
 import DateFnsUtils from '@date-io/date-fns';
+import styles from './ClinicForm.module.css';
 
 export default function EditForm(props) {
 
@@ -70,7 +71,11 @@ export default function EditForm(props) {
 
 
 	return(
-		<ClinicForm data={info} endpoint={"/edit"}/>
+        <div className={styles.root}>		
+            <h1>Edit Clinic</h1>
+            <text>Successfully made changes.</text>
+            <ClinicForm data={info} endpoint={"/edit"}/>
+        </div>
 	)
 
 }

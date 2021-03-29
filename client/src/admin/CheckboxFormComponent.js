@@ -4,6 +4,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControl from '@material-ui/core/FormControl';
 import { FormLabel } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 
 export const CheckboxFormComponent = React.memo((props) => {
     /*
@@ -42,14 +44,16 @@ export const CheckboxFormComponent = React.memo((props) => {
     ));
 
     return(
-        <div>
+        <Card>
+            <CardContent>
             <FormControl>
                 <FormLabel>{props.title}</FormLabel>
                 <FormGroup>
                 {checkboxes}
                 </FormGroup>
             </FormControl>
-        </div>
+            </CardContent>
+        </Card>
     )
 });
 

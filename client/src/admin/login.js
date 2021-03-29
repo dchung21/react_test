@@ -5,6 +5,7 @@ import Axios from 'axios';
 import Logo from '../Shared/Logo.js';
 import styles from './login.module.css';
 import Loader from 'react-loader-spinner';
+import TextField from '@material-ui/core/TextField';
 import { useHistory } from 'react-router-dom';
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
@@ -65,6 +66,11 @@ export default function Login() {
                             }}
                             />
     }
+
+    let msg;
+    if (failedLogin) {
+        msg = <text style={{fontFamily: "Helvetica"}}>Incorrect username or password!</text>
+    }
     return(  
         <div className={styles.container}>
             {content}
@@ -75,12 +81,18 @@ export default function Login() {
                         <div className={styles.header}>
                             Sign In
                         </div>
+                        {msg}
                         <div className={styles.input}>
                             <div className={styles.label}>
                                 <Input id="username" placeholder = "Username"/>
                             </div>
                             <div className={styles.label}>
-                                <Input id="password" placeholder = "Password" />  
+                                <TextField
+                                    id="standard-password-input"
+                                    label="Password"
+                                    type="password"
+                                    autoComplete="current-password"
+                                    />
                                 
                             </div>
                         </div>
