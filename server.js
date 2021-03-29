@@ -51,15 +51,14 @@ app.post('/delete', function(req, res) {
 
 	let params = [req.body.clinicName, req.body.clinicName, 
 				req.body.clinicName, req.body.clinicName, req.body.clinicName, req.body.clinicName,];
-          
-
+    
     let query = "START TRANSACTION;\n" +
-                "DELETE FROM ClinicCoords WHERE clinic=?;\n" +
                 "DELETE FROM ClinicAddress WHERE clinic=?;\n" + 
 				"DELETE FROM ClinicServices WHERE clinic=?;\n" +
 				"DELETE FROM ClinicLanguage WHERE clinic=?;\n" +
 				"DELETE FROM ClinicPayment WHERE clinic=?;\n" +
 				"DELETE FROM ClinicHours WHERE clinic=?;\n" +
+				"DELETE FROM ClinicCoords WHERE clinic=?;\n" +
                 "COMMIT;"
  
     console.log(query);

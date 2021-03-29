@@ -126,6 +126,23 @@ export default function ClinicForm(props) {
         });
     }
 
+	// handles deletion
+	const handleDelete = (e) => {
+        e.preventDefault();
+
+        let data = {
+            clinicName: clinicName,
+        };
+
+        //should have a success indicator, then we redirect to the edit page instead. 
+        Axios.post("/delete", data).then((res) => {
+            console.log(res);
+            if (res.status == 200) {
+                history.push("/manage");
+            }
+        });
+    }
+
 
 
     const classes = useStyles();
@@ -177,6 +194,7 @@ export default function ClinicForm(props) {
 
                     </div>
                     <Button type="submit" value="Submit" variant="contained" color="secondary">Submit</Button>
+					<Button type="button" value="Delete" variant="contained" onClick={handleDelete}>Delete</Button>
                 </FormControl>
 
             </form>
