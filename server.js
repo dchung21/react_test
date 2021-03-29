@@ -45,6 +45,33 @@ app.get('/logout', function(req, res){
     res.redirect('/');
   });
 
+app.post('/delete', function(req, res) {
+
+    console.log(req.body);
+
+	let params = [req.body.clinicName, req.body.clinicName, 
+				req.body.clinicName, req.body.clinicName, req.body.clinicName, req.body.clinicName,];
+    
+    let query = "START TRANSACTION;\n" +
+                "DELETE FROM ClinicAddress WHERE clinic=?;\n" + 
+				"DELETE FROM ClinicServices WHERE clinic=?;\n" +
+				"DELETE FROM ClinicLanguage WHERE clinic=?;\n" +
+				"DELETE FROM ClinicPayment WHERE clinic=?;\n" +
+				"DELETE FROM ClinicHours WHERE clinic=?;\n" +
+				"DELETE FROM ClinicCoords WHERE clinic=?;\n" +
+                "COMMIT;"
+ 
+    console.log(query);
+        
+    pool.query(query, params, function (err, result) {
+            if (err)
+               throw err;
+
+            console.log(result); 
+    });
+     
+})
+
 app.post('/edit', function(req, res) {
     let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
                 `%20${req.body.city}` +
