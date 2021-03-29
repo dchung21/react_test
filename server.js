@@ -45,7 +45,7 @@ app.get('/logout', function(req, res){
     res.redirect('/');
   });
 
-app.post('/delete', isLoggedIn, function(req, res) {
+app.post('/delete', function(req, res) {
 
     console.log(req.body);
 
