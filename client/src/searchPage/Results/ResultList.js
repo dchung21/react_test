@@ -16,7 +16,7 @@ class ResultList extends React.Component {
 	}
 
         //if we found no results
-        else if (!this.props.isLoading && rows.length == 0) {
+        else if (!this.props.isLoading && rows.length === 0) {
 	    content = <div className="error"><h2>Oops, we couldn't find any clinics nearby.
 	    <br />Tip: Try searching in the San Francisco Area</h2></div>
 	}

@@ -4,7 +4,6 @@ import FormGroup from '@material-ui/core/FormGroup';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { FormLabel } from '@material-ui/core';
 
 
 export default function TextFormComponent(props) {
@@ -12,7 +11,7 @@ export default function TextFormComponent(props) {
     return(
         <Card>
             <CardContent>
-            <Typography>Information</Typography>
+            <Typography style={{paddingBottom: "10px"}}>Information</Typography>
             <FormGroup row>
                 <TextField id="clinicName" label="Name of Clinic" value={props.clinicName} placeholder = "Name of the Clinic" variant="outlined" onInput = {e => props.setClinicName(e.target.value)} />
                 <TextField id="address" label="Address" value={props.address} variant="outlined" placeholder = "Address (123 Name of Street)" onInput = {e => props.setAddress(e.target.value)} />

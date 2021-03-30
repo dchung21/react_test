@@ -4,27 +4,13 @@ import Button from '@material-ui/core/Button';
 import Axios from 'axios';
 import Logo from '../Shared/Logo.js';
 import styles from './login.module.css';
-import Loader from 'react-loader-spinner';
 import TextField from '@material-ui/core/TextField';
 import { useHistory } from 'react-router-dom';
-
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function Login() {
     let history = useHistory();
 
-
-    const useStyles = makeStyles({
-		root: {
-			fontFamily: "Helvetica",
-            paddingRight: 0,
-            alignItems: 'center',
-            
-		}
-    })  
-    
-    
     const [failedLogin, setLogin] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -50,21 +36,10 @@ export default function Login() {
     }
 
 
-	const classes = useStyles();
 
-     let content;
+     let content = "Login";
     if (loading) {
-        content = <Loader className="loader" 
-                            type="ThreeDots" 
-                            color="#00BFF" 
-                            height={100} 
-                            width={100} 
-                            style = {{
-                                position: "fixed",
-                                top: '50%',
-                                left: '58%',
-                            }}
-                            />
+        content = <CircularProgress size={20} color={"white"}/>
     }
 
     let msg;
@@ -73,7 +48,6 @@ export default function Login() {
     }
     return(  
         <div className={styles.container}>
-            {content}
 			<div className={styles.center}>
             <Logo name={styles.homeLogo} />
                 <div className={styles.form}>
@@ -97,7 +71,7 @@ export default function Login() {
                             </div>
                         </div>
                         <Button type = "submit" variant = "contained" color = "primary">
-                            Login     
+                            {content}     
                         </Button>     
                     </form>
                 </div>

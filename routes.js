@@ -19,9 +19,7 @@ router.get('/searchClinics/address=:address&distance=:distance', function (req, 
 			//Offensive coding: Make sure we get a "valid response"
 			//Check for inputs, no street address etc., display the numbers correctly by searching for
 			//numbers in the query.
-			console.log(req.params.distance);
 			let query = constructQuery(geocoord.lat, geocoord.lng, req.body.filter, req.params.distance);
-			console.log(query);
 			pool.query(query, function(err, rows) {
 				if (err)
 				    throw err;
@@ -31,7 +29,6 @@ router.get('/searchClinics/address=:address&distance=:distance', function (req, 
 				    geocoord : [geocoord.lng, geocoord.lat],
 				    address: address,
 				}
-				console.log(re);
 				res.send(re);				
 			});	
 		}
@@ -40,14 +37,11 @@ router.get('/searchClinics/address=:address&distance=:distance', function (req, 
 
 // endpoint to filter clinics based on some set of parameters
 router.post('/filterClinics', function(req, res) {
-	console.log(req.body)
 	let query = constructQuery(req.body.geocoord[1], req.body.geocoord[0], req.body.filter, req.body.distance);
-	console.log(query);
 	pool.query(query, function(err, rows) {
 
 		if (err)
 			throw err;
-		console.log(rows);
 		let re = {
 			rows: rows
 		}
@@ -57,13 +51,11 @@ router.post('/filterClinics', function(req, res) {
 
 // endpoint to get data for a specific clinic
 router.get('/getClinicData/:clinic', function(req, res) {
-	console.log(req.params);
-	let query1 = `SELECT address, state, city, zipcode, phone, day_of_week, hour_open, hour_close, latitude, longitude`+ 
+	let query1 = `SELECT address, state, city, zipcode, phone, website, day_of_week, hour_open, hour_close, latitude, longitude`+ 
 	` FROM ClinicAddress INNER JOIN ClinicHours ON ClinicHours.clinic = ClinicAddress.clinic ` +
 	`INNER JOIN ClinicCoords ON ClinicCoords.clinic = ClinicAddress.clinic`+
 	` WHERE ` + 
 	`ClinicHours.clinic = '${req.params.clinic}';`
-	console.log(query1);
 	let query2 = `SELECT services from ClinicServices WHERE clinic = '${req.params.clinic}';`;
 
 	let query3 = `SELECT language from ClinicLanguage WHERE clinic= '${req.params.clinic}';`;
@@ -73,7 +65,6 @@ router.get('/getClinicData/:clinic', function(req, res) {
 		if (err)
 			throw err;
 
-		console.log(rows);	
 		let re = {
 			rows: rows[0],
 			services: rows[1],
@@ -92,7 +83,6 @@ router.get("/getClinics", function(req, res) {
 		if (err) 
 			throw err;
 
-		console.log(rows);
 		res.send({rows: rows});
 	});
 });

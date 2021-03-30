@@ -25,7 +25,6 @@ app.use(passport.session());
 app.post('/login', 
     passport.authenticate('local', { failureRedirect: '/fail' }),
     function(req, res) {
-        console.log("Logged in")
         res.send(true);
     
     });
@@ -47,7 +46,6 @@ app.get('/logout', function(req, res){
 
 app.post('/delete', function(req, res) {
 
-    console.log(req.body);
 
 	let params = [req.body.clinicName, req.body.clinicName, 
 				req.body.clinicName, req.body.clinicName, req.body.clinicName, req.body.clinicName,];
@@ -61,13 +59,12 @@ app.post('/delete', function(req, res) {
 				"DELETE FROM ClinicCoords WHERE clinic=?;\n" +
                 "COMMIT;"
  
-    console.log(query);
         
     pool.query(query, params, function (err, result) {
             if (err)
                throw err;
 
-            console.log(result); 
+            res.send(result);
     });
      
 })
@@ -79,7 +76,6 @@ app.post('/edit', function(req, res) {
                 `%20${req.body.zip}` + 
                 `&key=${process.env.GOOGLE_MAPS_API}`;
 
-    console.log(req.body);
 
     axios.get(geoapi).then(function (response, body) {
         if (response.status == 200) {
@@ -170,7 +166,7 @@ app.post('/edit', function(req, res) {
             if (err)
                throw err;
 
-            //console.log(result); 
+            res.send("Successfully edited clinic");
           });
         
       }
@@ -187,8 +183,6 @@ app.post('/test', function(req, res) {
                 `%20${req.body.zip}` + 
                 `&key=${process.env.GOOGLE_MAPS_API}`;
 
-    console.log(req.body);
-    console.log(req.body.newServices);
 
     axios.get(geoapi).then(function (response, body) {
         if (response.status == 200) {
@@ -200,21 +194,21 @@ app.post('/test', function(req, res) {
         let queryHours = "";
         
         let params = [req.body.clinicName, geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng,
-                    req.body.clinicName, req.body.address, req.body.city, req.body.zip, req.body.phone];
+                    req.body.clinicName, req.body.address, req.body.city, req.body.zip, req.body.phone, req.body.website];
 
-        for (x in req.body.newServices) {
+        for (x of req.body.newServices) {
             queryServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
             params.push(req.body.clinicName);
             params.push(x);
         }
 
-        for (x in req.body.newLang) {
+        for (x of req.body.newLang) {
             queryLang += "INSERT INTO ClinicLanguage(clinic, language) VALUES (?, ?);\n";
             params.push(req.body.clinicName);
             params.push(x);
         }
 
-        for (x in req.body.newPayment) {
+        for (x of req.body.newPayment) {
             queryPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
             params.push(req.body.clinicName);
             params.push(x);
@@ -229,14 +223,13 @@ app.post('/test', function(req, res) {
         }
         let query = "START TRANSACTION;\n" +
                     "INSERT INTO ClinicCoords(clinic, longitude, latitude, coords) VALUES (?, ?, ?, POINT(?, ?));\n" +
-                    "INSERT INTO ClinicAddress(clinic, address, city, zipcode, phone) VALUES (?, ?, ?, ?, ?);\n" + 
+                    "INSERT INTO ClinicAddress(clinic, address, city, zipcode, phone, website) VALUES (?, ?, ?, ?, ?, ?);\n" + 
                     queryServices +
                     queryLang +
                     queryPayment +
                     queryHours +
                     "COMMIT;"
  
-        console.log(query);
         
         
         pool.query(query, params, function (err, result) {
@@ -254,11 +247,9 @@ app.post('/test', function(req, res) {
 
   function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
-        console.log("logged in");
         return next();
     }
 
-    console.log("not logged in");
     res.send(false);
   }
 

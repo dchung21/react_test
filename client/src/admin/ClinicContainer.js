@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Axios from 'axios';
 import Loader from 'react-loader-spinner';
+import ControlBar from './ControlBar.js';
 import { useHistory } from "react-router-dom";
+import Card from '@material-ui/core/Card';
+import { CardContent, Typography } from '@material-ui/core';
 
 export default function ClinicContainer(props) {
 	const [rows, setRows] = useState([]);	
 	const [loading, setLoadingStatus] = useState(true);
+
 
 	let history = useHistory();
 	let content;
@@ -27,18 +31,11 @@ export default function ClinicContainer(props) {
 		})
 	}, []);
 
-	////////////////////////////////////////////////////////////////////
-	// Temporary: maps to results pages
-	///////////////////////////////////////////////////////////////////
 	function handleClick(param) {
     	history.push(`/edit/${param}`);
 	}
 
 
-	///////////////////////////////////////////////////////////////////
-
-
-	///////////////////////////////////////////////////////////////////////
 
 	//if we're still loading the results, then display a spinner
 	if (loading) {
@@ -55,20 +52,23 @@ export default function ClinicContainer(props) {
 		content = 
 			<ul>
 				{rows.map(data => 
-					<li key={data.clinic}>
-						<button type="button" 
-								onClick={()=>handleClick(data.clinic)}>
-									 {data.clinic} 
-						</button>
-					</li>)}
+                    <div style={{paddingBottom: 10, width: "40%", cursor: "pointer"}}>
+                    <Card onClick={() => handleClick(data.clinic)}>
+                        <CardContent>
+                            <Typography>{data.clinic}</Typography>
+                        </CardContent>
+                    </Card>
+                    </div>
+                )}
 			</ul>	
 	}	
 
 	//do more here later to make it pretty
 	return (
-		<div>
-			{content}	
-		</div>
+            <div>
+            <ControlBar />
+            {content}
+          </div>
 	);
 	/////////////////////////////////////////////////////////////////////////
 }

@@ -34,13 +34,12 @@ function ListItemLink(props) {
 }
 
 export default function SimpleList(props) {
-console.log(props);
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <List className={classes.ls} component="nav" aria-label="main mailbox folders">
-		  <ListItemLink target = "_blank" href="https://google.com">
+		  <ListItemLink target = "_blank" href={props.website}>
           		<ListItemIcon>
 					<LaunchIcon />
           		</ListItemIcon>

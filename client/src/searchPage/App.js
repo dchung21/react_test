@@ -1,6 +1,6 @@
 //This component is the search page, basically the parent component to everything on that page
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './App.module.css';
 import { MapBox } from './Map/Map.js';
 import ResultList from './Results/ResultList.js';
@@ -8,9 +8,7 @@ import { SearchInput } from '../Shared/SearchInput.js';
 import FilterList from './Filters/FilterList.js';
 import FilterModal from './Filters/FilterModal.js';
 import Logo from '../Shared/Logo.js';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Axios from 'axios';
-import { useHistory } from 'react-router-dom'
 import './styles.css';
 
 export default function App(props) {
@@ -24,10 +22,7 @@ export default function App(props) {
     const [loading, setIsLoading] = useState(true);
     const [distance, setDistance] = useState(10);
 
-    //media query stuff
-    const isSmall = useMediaQuery('(min-width:600px)');
 
-    let history = useHistory();
     useEffect(() => {
         async function fetchData() {
             await Axios.get(`../api/searchClinics/address=${props.match.params.address}&distance=${distance}`).then(function (response) {
@@ -149,7 +144,6 @@ export default function App(props) {
 
                 {/*** component that shows all the filters on the side ***/}
                 <FilterList
-                    isOpen={isSmall}
                     onChange={filterClinic}
                     openModal={onOpenModal}
                     isOpen={isDialogOpen}

@@ -4,10 +4,12 @@ import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { CheckboxFormComponent } from './CheckboxFormComponent.js';
 import TextFormComponent from './TextFormComponent.js';
 import { DateFormComponent } from './DateFormComponent.js';
+import styles from './ClinicForm.module.css';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,13 +31,12 @@ let filters = {
     ,
 
     "Insurance & Payment":
-        ["Private", "Flat Fee", "HealthyKids LA"]
+        ["Medicare", "Medi-Cal", "My Health LA", "Private", "Flat Fee", "HealthyKids LA"]
     ,
 
     Languages:
-        ["Vietnamese", "Korean", "Tagalog", "Spanish", "Russian", "Arabic"]
+        ["English", "Cantonese", "Mandarin", "Vietnamese", "Korean", "Tagalog", "Spanish", "Russian", "Arabic"]
 };
-//OPTIMIZE ME PLEASE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 export default function ClinicForm(props) {
     const [clinicName, setClinicName] = useState(props.data.clinicName);
@@ -50,6 +51,8 @@ export default function ClinicForm(props) {
     const [website, setWebsite] = useState(props.data.website);
     const [openHours, setOpenHours] = useState(props.data.openHours);
     const [closeHours, setCloseHours] = useState(props.data.closeHours);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [submitLoading, setSubmitLoading] = useState(false);
 
     let history = useHistory();
 
@@ -81,16 +84,17 @@ export default function ClinicForm(props) {
     //handles submission into endpoint
     const handleSubmit = (e) => {
         e.preventDefault();
+        setSubmitLoading(true);
 
         //converting the date type into sql time type
         let convertedOpenHours = openHours.map((data) => (
             //convertHours(data).toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
-            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1] 
+            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
         ));
 
         let convertedCloseHours = closeHours.map((data) => (
             //convertHours(data).toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
-            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1] 
+            data.toISOString().slice(0, 19).replace('T', ' ').split(' ')[1]
         ));
 
         //we package the data into an object
@@ -101,6 +105,7 @@ export default function ClinicForm(props) {
             state: state,
             zip: zip,
             phone: phone,
+            website: website,
             newServices: services,
             newPayment: payment,
             newLang: lang,
@@ -113,27 +118,29 @@ export default function ClinicForm(props) {
 
         //should have a success indicator, then we redirect to the edit page instead. 
         Axios.post(props.endpoint, data).then((res) => {
-            console.log(res);
-            if (res.status == 200) {
+            setSubmitLoading(false);
+            if (res.status === 200) {
                 history.push("/manage");
                 history.go();
             }
         });
     }
 
-	// handles deletion
-	const handleDelete = (e) => {
+    // handles deletion
+    const handleDelete = (e) => {
         e.preventDefault();
 
+        setDeleteLoading(true);
         let data = {
             clinicName: clinicName,
         };
 
         //should have a success indicator, then we redirect to the edit page instead. 
         Axios.post("/delete", data).then((res) => {
-            console.log(res);
-            if (res.status == 200) {
+            setDeleteLoading(false);
+            if (res.status === 200) {
                 history.push("/manage");
+                history.go();
             }
         });
     }
@@ -142,9 +149,22 @@ export default function ClinicForm(props) {
 
     const classes = useStyles();
 
+    //delete content
+    let deleteContent = "Delete";
+    
+    if (deleteLoading) {
+        deleteContent = <CircularProgress size={20}/>
+    }
+
+    let submitContent = "Submit";
+    if (submitLoading) {
+        submitContent = <CircularProgress size={20} />
+    }
+
     return (
-            <form className={classes.root} onSubmit={handleSubmit}>
-                <FormControl>
+        <form className={classes.root} onSubmit={handleSubmit}>
+            <FormControl>
+                <div className={styles.formComponent}>
                     <TextFormComponent
                         clinicName={clinicName}
                         setClinicName={setClinicName}
@@ -161,35 +181,49 @@ export default function ClinicForm(props) {
                         website={website}
                         setWebsite={setWebsite}
                     />
+                </div>
 
-
+                <div className={styles.formComponent}>
                     <DateFormComponent openHours={openHours}
                         closeHours={closeHours}
                         setOpenHours={onChangeOpenHours}
-                        setCloseHours={onChangeCloseHours} />
+                        setCloseHours={onChangeCloseHours}
+                        className={classes.formComponnt}
+                    />
+                </div>
 
-                    <div>
+                <div>
 
+                    <div className={styles.formComponent}>
                         <CheckboxFormComponent title={"Services"}
                             checked={services}
                             checkChange={onChangeServices}
-                            filter={filters["Services"]} />
+                            filter={filters["Services"]}
+                            className={classes.formComponent}
+                        />
+                    </div>
 
+                    <div className={styles.formComponent}>
                         <CheckboxFormComponent title={"Payment Options"}
                             checked={payment}
                             checkChange={onChangePayment}
-                            filter={filters["Insurance & Payment"]} />
+                            filter={filters["Insurance & Payment"]}
+                            className={classes.formComponent}
+                        />
+                    </div>
 
+                    <div className={styles.formComponent}>
                         <CheckboxFormComponent title={"Languages"}
                             checked={lang}
                             checkChange={onChangeLang}
-                            filter={filters["Languages"]} />
-
+                            filter={filters["Languages"]}
+                            className={classes.formComponent}
+                        />
                     </div>
-                    <Button type="submit" value="Submit" variant="contained" color="secondary">Submit</Button>
-					<Button type="button" value="Delete" variant="contained" onClick={handleDelete}>Delete</Button>
-                </FormControl>
-
-            </form>
+                </div>
+                <Button type="submit" value="Submit" variant="contained" color="secondary">{submitContent}</Button>
+                <Button type="button" value="Delete" variant="contained" onClick={handleDelete}>{deleteContent}</Button>
+            </FormControl>
+        </form>
     );
 }

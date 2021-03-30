@@ -22,7 +22,7 @@ class RoutingApp extends React.Component {
 					<Route path="/login" component = {Login} />
 					<Route path="/manage" component = {ClinicContainer} />
 					<Route path="/edit/:clinic" component = {EditForm} />
-					<Route path="/testing" component = {AddForm} />
+					<Route path="/add" component = {AddForm} />
 					<Route path="/" component = {HomeSearch} />
 				</Switch>
 			</BrowserRouter>

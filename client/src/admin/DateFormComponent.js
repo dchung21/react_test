@@ -9,7 +9,7 @@ import CardContent from '@material-ui/core/CardContent';
 export const DateFormComponent = React.memo((props) => {
 
     useEffect(() => {
-        if (props.openHours.length == 0 && props.closeHours.length == 0) {
+        if (props.openHours.length === 0 && props.closeHours.length === 0) {
             let newOpenHours = [];
             let newCloseHours = [];
 

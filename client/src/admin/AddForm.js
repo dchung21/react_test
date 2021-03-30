@@ -1,5 +1,7 @@
 import React from 'react';
 import ClinicForm from './ClinicForm.js';
+import styles from './ClinicForm.module.css';
+import ControlBar from './ControlBar.js';
 
 export default function AddForm() {
     let data = {
@@ -18,6 +20,12 @@ export default function AddForm() {
 
 
     return(
+        <div>
+        <ControlBar />
+        <div className={styles.root}>	
+        <h1 style={{fontFamily: "arial"}}>Add a new clinic</h1>
         <ClinicForm data={data} endpoint={"./test"} />
+        </div>
+        </div>
     )
 }
