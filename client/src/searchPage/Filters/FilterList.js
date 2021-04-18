@@ -17,19 +17,19 @@ import MenuItem from '@material-ui/core/MenuItem';
 //is there a better way to do this rather than hardcoding??
 const options = {
 	"Services" : [
-		{ label: "Primary Care", name: "primaryCare" },
-		{ label: "Mental Health", name: "mentalHealth"},
-		{ label: "Immunizations", name: "immunizations"}
+		{ label: "Primary Care", name: "Primary Care" },
+		{ label: "Mental Health", name: "Mental Health"},
+		{ label: "Immunizations", name: "Immunizations"}
 	],
 	"Payment" : [
-		{ label: "Medicare", name: "medicare" },
-		{ label: "Medi-Cal", name: "medi-cal"},
-		{ label: "My Health LA", name: "mlha"}
+		{ label: "Medicare", name: "Medicare" },
+		{ label: "Medi-Cal", name: "Medi-cal"},
+		{ label: "My Health LA", name: "My Health LA"}
 	],
 	"Language" : [
-		{ label: "English", name: "english" },
-		{ label: "Cantonese", name: "cantonese" },
-		{ label: "Mandarin", name: "mandarin" },
+		{ label: "English", name: "English" },
+		{ label: "Cantonese", name: "Cantonese" },
+		{ label: "Mandarin", name: "Mandarin" },
 	]
 
 }

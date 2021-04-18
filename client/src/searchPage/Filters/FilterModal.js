@@ -10,35 +10,34 @@ import styles from './filterModal.module.css';
 
 let filters = {
 	Services: [
-	{label: "Mental Health", name: "cancer"},
-	{label: "Primary Care", name: "flu"},
-	{label: "Immunizations", name: "cold"},
-	{label: "Gastroenterology", name: "h1n1"},
-	{label: "Dental", name: "dental"},
-	{label: "Vision", name: "vision"},
-	{label: "Women’s Health", name: "derm"},
-	{label: "Referrals", name: "general"},
-	{label: "Insurance E.A", name: "general"},
-	{label: "Pharmacy", name: "general"},
-	{label: "Pediatrics", name: "general"},
-	{label: "Pediatrics", name: "general"},
-	{label: "Hypertension Care", name: "general"},
+	{label: "Mental Health", name: "Mental Health"},
+	{label: "Primary Care", name: "Primary Care"},
+	{label: "Immunizations", name: "Immunizations"},
+	{label: "Gastroenterology", name: "Gastroenterology"},
+	{label: "Dental", name: "Dental"},
+	{label: "Vision", name: "Vision"},
+	{label: "Women’s Health", name: "Women’s Health"},
+	{label: "Referrals", name: "Referrals"},
+	{label: "Insurance E.A", name: "Insurance E.A"},
+	{label: "Pharmacy", name: "Pharmacy"},
+	{label: "Pediatrics", name: "Pediatrics"},
+	{label: "Hypertension Care", name: "Hypertension Care"},
 
 ],
 
 	"Payment": [
-	{label: "Private", name: "privateInsurance"},
-	{label: "Flat Fee", name: "flatFee"},
-	{label: "HealthyKids LA", name: "healthtKids"},
+	{label: "Private", name: "Private"},
+	{label: "Flat Fee", name: "Flat Fee"},
+	{label: "HealthyKids LA", name: "HealthyKids LA"},
 ],
 
 	"Language": [
-	{ label: "Vietnamese", name: "vietnamese" },
-	{ label: "Korean", name: "korean" },
-	{ label: "Tagalog", name: "tagalog" },
-	{ label: "Spanish", name: "spanish" },
-	{ label: "Russian", name: "russian" },
-	{ label: "Arabic", name: "arabic" }
+	{ label: "Vietnamese", name: "Vietnamese" },
+	{ label: "Korean", name: "Korean" },
+	{ label: "Tagalog", name: "Tagalog" },
+	{ label: "Spanish", name: "Spanish" },
+	{ label: "Russian", name: "Russian" },
+	{ label: "Arabic", name: "Arabic" }
 ]
 }
 

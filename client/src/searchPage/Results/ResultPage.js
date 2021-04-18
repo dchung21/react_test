@@ -17,6 +17,7 @@ function tConvert(time) {
 
     if (time.length > 1) { // If time format correct
         time = time.slice(1);  // Remove full string match value
+        time[0] = (parseInt(time[0]) + 17) % 24; //converting timezones 
         time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
         time[0] = +time[0] % 12 || 12; // Adjust hours
     }
