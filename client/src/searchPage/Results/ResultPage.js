@@ -17,6 +17,7 @@ function tConvert(time) {
 
     if (time.length > 1) { // If time format correct
         time = time.slice(1);  // Remove full string match value
+        console.log(time);
         time[0] = (parseInt(time[0]) + 17) % 24; //converting timezones 
         time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
         time[0] = +time[0] % 12 || 12; // Adjust hours
@@ -139,13 +140,13 @@ export default function ResultPage(props) {
                             </div>
 
                             <div className={styles.hours}>
-                                <b className={styles.day1}>Mon</b><div className="hour1">{hours[0]}</div>
-                                <b className={styles.day2}>Tue</b><div className="hour2">{hours[1]}</div>
-                                <b className={styles.day3}>Wed</b><div className="hour3">{hours[2]}</div>
-                                <b className={styles.day4}>Thu</b><div className="hour4">{hours[3]}</div>
-                                <b className={styles.day5}>Fri</b><div className="hour5">{hours[4]}</div>
-                                <b className={styles.day6}>Sat</b><div className="hour6">{hours[5]}</div>
-                                <b className={styles.day7}>Sun</b><div className="hour7">{hours[6]}</div>
+                                <b className={styles.day1}>Mon</b><div className="hour1">{hours[1]}</div>
+                                <b className={styles.day2}>Tue</b><div className="hour2">{hours[2]}</div>
+                                <b className={styles.day3}>Wed</b><div className="hour3">{hours[3]}</div>
+                                <b className={styles.day4}>Thu</b><div className="hour4">{hours[4]}</div>
+                                <b className={styles.day5}>Fri</b><div className="hour5">{hours[5]}</div>
+                                <b className={styles.day6}>Sat</b><div className="hour6">{hours[6]}</div>
+                                <b className={styles.day7}>Sun</b><div className="hour7">{hours[0]}</div>
                             </div>
 
                         </div>
