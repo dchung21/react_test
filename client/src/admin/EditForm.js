@@ -3,11 +3,23 @@ import ClinicForm from './ClinicForm.js';
 import Axios from 'axios';
 import styles from './ClinicForm.module.css';
 import ControlBar from './ControlBar.js';
+import MuiAlert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
+
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function EditForm(props) {
 
     const [data, setData] = useState({});
     const [isLoading, setIsLoading] = useState(true);
+    const [successEdit, setSuccessEdit] = useState(false);
+    const [notiState, setNotiState] = useState({ open: false, vertical: 'bottom', horizontal: 'center'});
+    //false unless add form redirects to edit form
+    const [successAdd, setSuccessAdd] = useState(false);
+
+    const { vertical, horizontal, open } = notiState;
 
     useEffect(() => {
         async function fetchData() {
@@ -17,6 +29,10 @@ export default function EditForm(props) {
             });
         }
         fetchData();
+        window.scrollTo(0, 0);
+
+        if (props.history.location.state)
+            setSuccessAdd(props.history.location.state.add);
     }, []);
 
     if (isLoading) {
@@ -69,14 +85,55 @@ export default function EditForm(props) {
         closeHours: fillCloseHours
     };
 
+    const handleEditOpen = () => {
+        setSuccessEdit(true);
+    };
+
+    const handleEditClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setSuccessEdit(false);
+    };
+
+    //clean up this business later lol!
+    const handleAddClose = (event, reason) => {
+        if (reason == 'clickaway') {
+            return;
+        }
+
+        setSuccessAdd(false);
+    }
 
     return (
         <div>
             <ControlBar />
             <div className={styles.root}>
-                <h1 style={{fontFamily: "arial"}}>Edit Clinic</h1>
-                <ClinicForm data={info} endpoint={"/edit"} />
+                <h1 style={{ fontFamily: "arial" }}>Edit Clinic</h1>
+                <ClinicForm data={info} endpoint={"/edit"} success={handleEditOpen} />
             </div>
+
+            <Snackbar open={successEdit} 
+                      autoHideDuration={6000} 
+                      onClose={handleEditClose}
+                      anchorOrigin={{ vertical, horizontal}}>
+                <Alert onClose={handleEditClose} severity="success">
+                    Successfully made changes!
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={successAdd} 
+                      autoHideDuration={6000} 
+                      onClose={handleAddClose}
+                      anchorOrigin={{ vertical, horizontal}}>
+                <Alert onClose={handleAddClose} severity="success">
+                    Successfully added clinic!
+                </Alert>
+            </Snackbar>
+
+
+
         </div>
     )
 

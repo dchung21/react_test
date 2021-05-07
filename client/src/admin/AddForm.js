@@ -23,7 +23,7 @@ export default function AddForm() {
         <div>
         <ControlBar />
         <div className={styles.root}>	
-        <h1 style={{fontFamily: "arial"}}>Add a new clinic</h1>
+        <h1 style={{fontFamily: "Helvetica", textAlign: "center"}}>Add a new clinic</h1>
         <ClinicForm data={data} endpoint={"./test"} />
         </div>
         </div>

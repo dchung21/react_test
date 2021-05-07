@@ -5,11 +5,11 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 import { CheckboxFormComponent } from './CheckboxFormComponent.js';
 import TextFormComponent from './TextFormComponent.js';
 import { DateFormComponent } from './DateFormComponent.js';
 import styles from './ClinicForm.module.css';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,8 +18,11 @@ const useStyles = makeStyles((theme) => ({
             width: '25ch',
         },
         display: 'flex',
-        marginLeft: 20,
-        marginTop: 20,
+        justifyContent: "center",
+    },
+
+    form: {
+        display: "flex",
     }
 }))
 
@@ -55,7 +58,6 @@ export default function ClinicForm(props) {
     const [submitLoading, setSubmitLoading] = useState(false);
 
     let history = useHistory();
-
     const onChangeServices = useCallback(
         (arr) => setServices(arr),
         [setServices]
@@ -120,8 +122,11 @@ export default function ClinicForm(props) {
         Axios.post(props.endpoint, data).then((res) => {
             setSubmitLoading(false);
             if (res.status === 200) {
-                history.push("/manage");
-                history.go();
+                if (props.success)
+                    props.success();
+
+                else 
+                    history.push({pathname: `edit/${clinicName}`, state :{add : true}});
             }
         });
     }
@@ -139,8 +144,7 @@ export default function ClinicForm(props) {
         Axios.post("/delete", data).then((res) => {
             setDeleteLoading(false);
             if (res.status === 200) {
-                history.push("/manage");
-                history.go();
+                history.push({pathname: "/manage", state: {deleted: true}});
             }
         });
     }
@@ -163,7 +167,7 @@ export default function ClinicForm(props) {
 
     return (
         <form className={classes.root} onSubmit={handleSubmit}>
-            <FormControl>
+            <FormControl classes = {{root: classes.form}}>
                 <div className={styles.formComponent}>
                     <TextFormComponent
                         clinicName={clinicName}
