@@ -7,8 +7,10 @@ import { useHistory } from "react-router-dom";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { CheckboxFormComponent } from './CheckboxFormComponent.js';
 import TextFormComponent from './TextFormComponent.js';
+import { InfoTextComponent } from './InfoTextComponent.js';
 import { DateFormComponent } from './DateFormComponent.js';
 import styles from './ClinicForm.module.css';
+import { TextField } from "@material-ui/core";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +36,7 @@ let filters = {
     ,
 
     "Insurance & Payment":
-        ["Medicare", "Medi-Cal", "My Health LA", "Private", "Flat Fee", "HealthyKids LA"]
+        ["Medicare", "Medi-Cal", "My Health LA", "Private", "Flat Fee", "HealthyKids LA", "Sliding Scale Fee"]
     ,
 
     Languages:
@@ -54,6 +56,7 @@ export default function ClinicForm(props) {
     const [website, setWebsite] = useState(props.data.website);
     const [openHours, setOpenHours] = useState(props.data.openHours);
     const [closeHours, setCloseHours] = useState(props.data.closeHours);
+    const [note, setNote] = useState(props.data.note);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
 
@@ -115,7 +118,8 @@ export default function ClinicForm(props) {
             ogPayment: props.data.payment,
             ogLang: props.data.lang,
             openHours: convertedOpenHours,
-            closeHours: convertedCloseHours
+            closeHours: convertedCloseHours,
+            note: note
         };
 
         //should have a success indicator, then we redirect to the edit page instead. 
@@ -125,8 +129,8 @@ export default function ClinicForm(props) {
                 if (props.success)
                     props.success();
 
-                else 
-                    history.push({pathname: `edit/${clinicName}`, state :{add : true}});
+                else
+                    history.push({ pathname: `edit/${clinicName}`, state: { add: true } });
             }
         });
     }
@@ -144,7 +148,7 @@ export default function ClinicForm(props) {
         Axios.post("/delete", data).then((res) => {
             setDeleteLoading(false);
             if (res.status === 200) {
-                history.push({pathname: "/manage", state: {deleted: true}});
+                history.push({ pathname: "/manage", state: { deleted: true } });
             }
         });
     }
@@ -155,9 +159,9 @@ export default function ClinicForm(props) {
 
     //delete content
     let deleteContent = "Delete";
-    
+
     if (deleteLoading) {
-        deleteContent = <CircularProgress size={20}/>
+        deleteContent = <CircularProgress size={20} />
     }
 
     let submitContent = "Submit";
@@ -167,7 +171,7 @@ export default function ClinicForm(props) {
 
     return (
         <form className={classes.root} onSubmit={handleSubmit}>
-            <FormControl classes = {{root: classes.form}}>
+            <FormControl classes={{ root: classes.form }}>
                 <div className={styles.formComponent}>
                     <TextFormComponent
                         clinicName={clinicName}
@@ -196,6 +200,9 @@ export default function ClinicForm(props) {
                     />
                 </div>
 
+                <div className={styles.formComponent}>
+                    <InfoTextComponent note={note} setNote={setNote} />
+                </div>
                 <div>
 
                     <div className={styles.formComponent}>

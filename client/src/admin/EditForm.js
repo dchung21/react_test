@@ -78,11 +78,13 @@ export default function EditForm(props) {
         state: data.rows[0].state,
         zip: data.rows[0].zipcode,
         phone: data.rows[0].phone,
+        website: data.rows[0].website,
         services: fillServices,
         payment: fillPayment,
         lang: fillLanguage,
         openHours: fillOpenHours,
-        closeHours: fillCloseHours
+        closeHours: fillCloseHours,
+        note: data.note[0].notes
     };
 
     const handleEditOpen = () => {

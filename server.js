@@ -22,244 +22,251 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: false, save
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.post('/login', 
+app.post('/login',
     passport.authenticate('local', { failureRedirect: '/fail' }),
-    function(req, res) {
+    function (req, res) {
         res.send(true);
-    
+
     });
 
 
-app.get('/fail', function(req, res) {
+app.get('/fail', function (req, res) {
     res.send(false);
 })
 
 //checks if log in - returns true if logged in, false if not
-app.get('/isLoggedIn', isLoggedIn, function(req, res) {
+app.get('/isLoggedIn', isLoggedIn, function (req, res) {
     res.send(true)
 });
 
-app.get('/logout', function(req, res){
+app.get('/logout', function (req, res) {
     req.logout();
     res.redirect('/');
-  });
+});
 
-app.post('/delete', function(req, res) {
+app.post('/delete', function (req, res) {
 
 
-	let params = [req.body.clinicName, req.body.clinicName, 
-				req.body.clinicName, req.body.clinicName, req.body.clinicName, req.body.clinicName,];
-    
+    let params = [req.body.clinicName, req.body.clinicName,
+    req.body.clinicName, req.body.clinicName, req.body.clinicName, req.body.clinicName, req.body.clinicName];
+
     let query = "START TRANSACTION;\n" +
-                "DELETE FROM ClinicAddress WHERE clinic=?;\n" + 
-				"DELETE FROM ClinicServices WHERE clinic=?;\n" +
-				"DELETE FROM ClinicLanguage WHERE clinic=?;\n" +
-				"DELETE FROM ClinicPayment WHERE clinic=?;\n" +
-				"DELETE FROM ClinicHours WHERE clinic=?;\n" +
-				"DELETE FROM ClinicCoords WHERE clinic=?;\n" +
-                "COMMIT;"
- 
-        
+        "DELETE FROM ClinicAddress WHERE clinic=?;\n" +
+        "DELETE FROM ClinicServices WHERE clinic=?;\n" +
+        "DELETE FROM ClinicLanguage WHERE clinic=?;\n" +
+        "DELETE FROM ClinicPayment WHERE clinic=?;\n" +
+        "DELETE FROM ClinicHours WHERE clinic=?;\n" +
+        "DELETE FROM ClinicCoords WHERE clinic=?;\n" +
+        "DELETE FROM ClinicNotes WHERE clinic=?;\n" +
+    "COMMIT;"
+
+
     pool.query(query, params, function (err, result) {
-            if (err)
-               throw err;
+        if (err)
+            throw err;
 
-            res.send(result);
+        res.send(result);
     });
-     
+
 })
 
-app.post('/edit', function(req, res) {
+app.post('/edit', function (req, res) {
     let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
-                `%20${req.body.city}` +
-                `%20${req.body.state}` +
-                `%20${req.body.zip}` + 
-                `&key=${process.env.GOOGLE_MAPS_API}`;
+        `%20${req.body.city}` +
+        `%20${req.body.state}` +
+        `%20${req.body.zip}` +
+        `&key=${process.env.GOOGLE_MAPS_API}`;
 
 
     axios.get(geoapi).then(function (response, body) {
         if (response.status == 200) {
-        let geocoord = response.data.results[0].geometry.location;
+            let geocoord = response.data.results[0].geometry.location;
 
-		let delServices = req.body.ogServices.filter(x => !req.body.newServices.includes(x));
-		let addServices = req.body.newServices.filter(x => !req.body.ogServices.includes(x));
+            let delServices = req.body.ogServices.filter(x => !req.body.newServices.includes(x));
+            let addServices = req.body.newServices.filter(x => !req.body.ogServices.includes(x));
 
-		let delPayment = req.body.ogPayment.filter(x => !req.body.newPayment.includes(x));
-		let addPayment = req.body.newPayment.filter(x => !req.body.ogPayment.includes(x));
+            let delPayment = req.body.ogPayment.filter(x => !req.body.newPayment.includes(x));
+            let addPayment = req.body.newPayment.filter(x => !req.body.ogPayment.includes(x));
 
-		let delLang = req.body.ogLang.filter(x => !req.body.newLang.includes(x));
-		let addLang = req.body.newLang.filter(x => !req.body.ogLang.includes(x));
+            let delLang = req.body.ogLang.filter(x => !req.body.newLang.includes(x));
+            let addLang = req.body.newLang.filter(x => !req.body.ogLang.includes(x));
 
 
-        let queryAddServices = "";
-        let queryDelServices = "";
-        let queryAddLang = "";
-        let queryDelLang = "";
-        let queryAddPayment = "";
-        let queryDelPayment = "";
-        let queryHours = "";
-        
-        let params = [geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng, req.body.clinicName,
-                    req.body.address, req.body.city, req.body.state, req.body.zip, req.body.phone, req.body.clinicName];
-		
-		
-        for (let i = 0; i < addServices.length; i++) {
-            queryAddServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
-            params.push(req.body.clinicName);
-            params.push(addServices[i]);
+            let queryAddServices = "";
+            let queryDelServices = "";
+            let queryAddLang = "";
+            let queryDelLang = "";
+            let queryAddPayment = "";
+            let queryDelPayment = "";
+            let queryHours = "";
+
+            let params = [geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng, req.body.clinicName,
+            req.body.address, req.body.city, req.body.state, req.body.zip, req.body.phone, req.body.website, 
+            req.body.clinicName, req.body.note, req.body.clinicName];
+
+
+            //TODO: REFACTOR THIS LATER
+            for (let i = 0; i < addServices.length; i++) {
+                queryAddServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
+                params.push(req.body.clinicName);
+                params.push(addServices[i]);
+            }
+            for (let i = 0; i < delServices.length; i++) {
+                queryDelServices += "DELETE FROM ClinicServices WHERE clinic=? AND services=?;\n";
+                params.push(req.body.clinicName);
+                params.push(delServices[i]);
+            }
+
+
+            for (let i = 0; i < addLang.length; i++) {
+                queryAddLang += "INSERT INTO ClinicLanguage(clinic, language) VALUES (?, ?);\n";
+                params.push(req.body.clinicName);
+                params.push(addLang[i]);
+            }
+            for (let i = 0; i < delLang.length; i++) {
+                queryDelLang += "DELETE FROM ClinicLanguage WHERE clinic=? AND language=?;\n";
+                params.push(req.body.clinicName);
+                params.push(delLang[i]);
+            }
+
+
+            for (let i = 0; i < addPayment.length; i++) {
+                queryAddPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
+                params.push(req.body.clinicName);
+                params.push(addPayment[i]);
+            }
+            for (let i = 0; i < delPayment.length; i++) {
+                queryDelPayment += "DELETE FROM ClinicPayment WHERE clinic=? AND payment=?;\n";
+                params.push(req.body.clinicName);
+                params.push(delPayment[i]);
+            }
+
+
+            for (let i = 0; i < 7; i++) {
+                queryHours += "UPDATE ClinicHours SET hour_open=?, hour_close=? WHERE clinic=? AND day_of_week=?;\n";
+                params.push(req.body.openHours[i]);
+                params.push(req.body.closeHours[i]);
+                params.push(req.body.clinicName);
+                params.push(i + 1);
+            }
+
+            //END REFACTOR ZONE
+
+            let query = "START TRANSACTION;\n" +
+                "UPDATE ClinicCoords SET longitude=?, latitude=?, coords=POINT(?,?) WHERE clinic=?;\n" +
+                "UPDATE ClinicAddress SET address=?, city=?, state=?, zipcode=?, phone=? , website=? WHERE clinic=?;\n" +
+                "UPDATE ClinicNotes SET notes=? WHERE clinic=?;\n" +
+                queryAddServices +
+                queryDelServices +
+                queryAddLang +
+                queryDelLang +
+                queryAddPayment +
+                queryDelPayment +
+                queryHours +
+                "COMMIT;"
+
+            //console.log(query);
+            //console.log(req.body.openHours);
+
+
+            pool.query(query, params, function (err, result) {
+                if (err)
+                    throw err;
+
+                res.send("Successfully edited clinic");
+            });
+
         }
-		for (let i = 0; i < delServices.length; i++) {
-            queryDelServices += "DELETE FROM ClinicServices WHERE clinic=? AND services=?;\n";
-			params.push(req.body.clinicName);
-			params.push(delServices[i]);
-        }
-		
-
-        for (let i = 0; i < addLang.length; i++) {
-            queryAddLang += "INSERT INTO ClinicLanguage(clinic, language) VALUES (?, ?);\n";
-            params.push(req.body.clinicName);
-            params.push(addLang[i]);
-        }
-		for (let i = 0; i < delLang.length; i++) {
-            queryDelLang += "DELETE FROM ClinicLanguage WHERE clinic=? AND language=?;\n";
-            params.push(req.body.clinicName);
-            params.push(delLang[i]);
-        }
-
-
-        for (let i = 0; i < addPayment.length; i++) {
-            queryAddPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
-            params.push(req.body.clinicName);
-            params.push(addPayment[i]);
-        }
-		for (let i = 0; i < delPayment.length; i++) {
-            queryDelPayment += "DELETE FROM ClinicPayment WHERE clinic=? AND payment=?;\n";
-            params.push(req.body.clinicName);
-            params.push(delPayment[i]);
-        }
-		
-
-        for (let i = 0; i < 7; i++) {
-            queryHours += "UPDATE ClinicHours SET hour_open=?, hour_close=? WHERE clinic=? AND day_of_week=?;\n";
-            params.push(req.body.openHours[i]);
-            params.push(req.body.closeHours[i]);
-			params.push(req.body.clinicName);
-			params.push(i+1);
-        }
-        let query = "START TRANSACTION;\n" +
-                    "UPDATE ClinicCoords SET longitude=?, latitude=?, coords=POINT(?,?) WHERE clinic=?;\n" +
-                    "UPDATE ClinicAddress SET address=?, city=?, state=?, zipcode=?, phone=? WHERE clinic=?;\n" + 
-                    queryAddServices +
-                    queryDelServices +
-                    queryAddLang +
-                    queryDelLang +
-                    queryAddPayment +
-                    queryDelPayment +
-                    queryHours +
-                    "COMMIT;"
- 
-        //console.log(query);
-        //console.log(req.body.openHours);
-        
-        
-        pool.query(query, params, function (err, result) {
-            if (err)
-               throw err;
-
-            res.send("Successfully edited clinic");
-          });
-        
-      }
-  });
+    });
 })
 
 
- 
-app.post('/test', function(req, res) {
+app.post('/test', function (req, res) {
 
     let geoapi = `https://maps.googleapis.com/maps/api/geocode/json?address=${req.body.address}` +
-                `%20${req.body.city}` +
-                `%20${req.body.state}` +
-                `%20${req.body.zip}` + 
-                `&key=${process.env.GOOGLE_MAPS_API}`;
+        `%20${req.body.city}` +
+        `%20${req.body.state}` +
+        `%20${req.body.zip}` +
+        `&key=${process.env.GOOGLE_MAPS_API}`;
 
 
     axios.get(geoapi).then(function (response, body) {
         if (response.status == 200) {
-        let geocoord = response.data.results[0].geometry.location;
-          
-        let queryServices = "";
-        let queryLang = "";
-        let queryPayment = "";
-        let queryHours = "";
-        
-        let params = [req.body.clinicName, geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng,
-                    req.body.clinicName, req.body.address, req.body.city, req.body.zip, req.body.phone, req.body.website];
+            let geocoord = response.data.results[0].geometry.location;
 
-        for (x of req.body.newServices) {
-            queryServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
-            params.push(req.body.clinicName);
-            params.push(x);
+            let queryServices = "";
+            let queryLang = "";
+            let queryPayment = "";
+            let queryHours = "";
+
+            let params = [req.body.clinicName, geocoord.lat, geocoord.lng, geocoord.lat, geocoord.lng,
+            req.body.clinicName, req.body.address, req.body.city, req.body.zip, req.body.phone, req.body.website, req.body.clinicName, req.body.note];
+
+            for (x of req.body.newServices) {
+                queryServices += "INSERT INTO ClinicServices(clinic, services) VALUES (? ,?);\n";
+                params.push(req.body.clinicName);
+                params.push(x);
+            }
+
+            for (x of req.body.newLang) {
+                queryLang += "INSERT INTO ClinicLanguage(clinic, language) VALUES (?, ?);\n";
+                params.push(req.body.clinicName);
+                params.push(x);
+            }
+
+            for (x of req.body.newPayment) {
+                queryPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
+                params.push(req.body.clinicName);
+                params.push(x);
+            }
+
+            for (let i = 0; i < 7; i++) {
+                queryHours += "INSERT INTO ClinicHours(clinic, day_of_week, hour_open, hour_close) VALUES (?, ?, ?, ?);\n";
+                params.push(req.body.clinicName);
+                params.push(i + 1);
+                params.push(req.body.openHours[i]);
+                params.push(req.body.closeHours[i]);
+            }
+            let query = "START TRANSACTION;\n" +
+                "INSERT INTO ClinicCoords(clinic, longitude, latitude, coords) VALUES (?, ?, ?, POINT(?, ?));\n" +
+                "INSERT INTO ClinicAddress(clinic, address, city, zipcode, phone, website) VALUES (?, ?, ?, ?, ?, ?);\n" +
+                "INSERT INTO ClinicNotes(clinic, notes) VALUES (?, ?);\n"+
+                queryServices +
+                queryLang +
+                queryPayment +
+                queryHours +
+                "COMMIT;"
+
+
+
+            pool.query(query, params, function (err, result) {
+                if (err)
+                    throw err;
+
+                res.send("Successfully added clinic");
+            });
+
         }
-
-        for (x of req.body.newLang) {
-            queryLang += "INSERT INTO ClinicLanguage(clinic, language) VALUES (?, ?);\n";
-            params.push(req.body.clinicName);
-            params.push(x);
-        }
-
-        for (x of req.body.newPayment) {
-            queryPayment += "INSERT INTO ClinicPayment(clinic, payment) VALUES (?, ?);\n";
-            params.push(req.body.clinicName);
-            params.push(x);
-        }
-
-        for (let i = 0; i < 7; i++) {
-            queryHours += "INSERT INTO ClinicHours(clinic, day_of_week, hour_open, hour_close) VALUES (?, ?, ?, ?);\n";
-            params.push(req.body.clinicName);
-            params.push(i+1);
-            params.push(req.body.openHours[i]);
-            params.push(req.body.closeHours[i]);
-        }
-        let query = "START TRANSACTION;\n" +
-                    "INSERT INTO ClinicCoords(clinic, longitude, latitude, coords) VALUES (?, ?, ?, POINT(?, ?));\n" +
-                    "INSERT INTO ClinicAddress(clinic, address, city, zipcode, phone, website) VALUES (?, ?, ?, ?, ?, ?);\n" + 
-                    queryServices +
-                    queryLang +
-                    queryPayment +
-                    queryHours +
-                    "COMMIT;"
- 
-        
-        
-        pool.query(query, params, function (err, result) {
-            if (err)
-               throw err;
-
-            res.send("Successfully added clinic");
-          });
-          
-      }
-  });
+    });
 
 })
 
 
-  function isLoggedIn(req, res, next) {
+function isLoggedIn(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
 
     res.send(false);
-  }
+}
 
 // END PASSPORT STUFF
 
 if (process.env.NODE_ENV === 'production') {
-	app.use(express.static('client/build'));
-	app.get('*', (req, res) => {
-		res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-	})
+    app.use(express.static('client/build'));
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    })
 }
 
 app.listen(process.env.PORT || '8080', () => console.log('Server is running on port 8080'))

@@ -10,14 +10,13 @@ import Axios from 'axios';
 import EmptyResultPage from './EmptyResultPage';
 import Loader from 'react-loader-spinner';
 
-
+//changes 24 hour to 12 hour and converts timezone
 function tConvert(time) {
     // Check correct time format and split into components
     time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
 
     if (time.length > 1) { // If time format correct
         time = time.slice(1);  // Remove full string match value
-        console.log(time);
         time[0] = (parseInt(time[0]) + 17) % 24; //converting timezones 
         time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
         time[0] = +time[0] % 12 || 12; // Adjust hours
@@ -26,24 +25,12 @@ function tConvert(time) {
     return time.join(''); // return adjusted time or original string
 }
 
-function isOpen(open, close) {
-    if (open === close)
-        return false;
-    let o = open.split(':'); // split it at the colons
-    let c = close.split(':');
-    // minutes are worth 60 seconds. Hours are worth 60 minutes.
-    let o_seconds = (+o[0]) * 60 * 60 + (+o[1]) * 60 + (+o[2]);
-    let c_seconds = (+c[0]) * 60 * 60 + (+c[1]) * 60 + (+c[2]);
-
-    let seconds = new Date().getTime() / 1000;
-    return seconds >= o_seconds && c_seconds >= seconds;
-}
-
-
+//
 function mapTileProvider(x, y, z, dpr) {
-    return `https://api.maptiler.com/maps/streets/256/${z}/${x}/${y}${dpr >= 2 ? '@2x' : ''}.png?key=0qXe9fatH9TgwZzcuFgC`;
+    return `https://api.maptiler.com/maps/streets/256/${z}/${x}/${y}${dpr >= 2 ? '@2x' : ''}.png?key=${process.env.REACT_APP_MAPTILER_KEY}`;
 }
 
+// tells if clinic is open or closed
 function convertHours(hours) {
     let hr = [];
     for (let i = 0; i < 7; i++) {
@@ -57,10 +44,12 @@ function convertHours(hours) {
     return hr;
 }
 
+// generate google maps link
 function generateDirectionLink(address) {
     return `https://www.google.com/maps/search/?api=1&query=${address.replace(" ", "+")}`;
 }
 
+// generates a bunch of checks for us
 function createChecks(data, type) {
     let checks = [];
     for (let i = 0; i < data.length; i++)
@@ -75,6 +64,7 @@ export default function ResultPage(props) {
     const [data, setData] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
+    // get data once on first render
     useEffect(() => {
         async function fetchData() {
             await Axios.get(`../api/getClinicData/${props.match.params.clinic}`).then(function (response) {
@@ -110,6 +100,16 @@ export default function ResultPage(props) {
             </Map>
         );
 
+        let about;
+
+        console.log(about);
+        if (data.note[0].notes != null && data.note[0].notes) {
+            about = (<div className={styles.about}>
+                <h2> About </h2>
+                <p>{data.note[0].notes}</p>
+            </div>)
+        }
+
         return (
             <div className={styles.resultContainer}>
                 <div className={styles.header}>
@@ -125,12 +125,7 @@ export default function ResultPage(props) {
                             <h3 className={styles.currentHour}>{((hours[n] !== "Closed") ? "Open" : "") + " " + hours[n]}</h3>
                         </div>
 
-                        {/*
-					<div className = {styles.about}>
-						<h2> About </h2>
-						<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id sapien iaculis, ornare nisi id, malesuada sapien. Curabitur luctus tincidunt augue, sit amet tincidunt nibh ornare a. Mauris bibendum rhoncus dui non sodales. Integer sit amet magna nec arcu egestas fringilla. Nunc sit amet sem eget tortor hendrerit egestas. Phasellus et dignissim turpis. Maecenas ac porta dui, ac semper ante. Phasellus in augue felis. </p>
-					</div>
-                    */}
+                        {about}
 
                         <div className={styles.locationHours}>
                             <h2> Location and Hours </h2>

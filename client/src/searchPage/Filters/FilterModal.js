@@ -29,6 +29,7 @@ let filters = {
 	{label: "Private", name: "Private"},
 	{label: "Flat Fee", name: "Flat Fee"},
 	{label: "HealthyKids LA", name: "HealthyKids LA"},
+    {label: "Sliding Scale Fee", name: "Sliding Scale Fee"}
 ],
 
 	"Language": [
